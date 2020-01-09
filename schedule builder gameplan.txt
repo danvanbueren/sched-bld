@@ -1,0 +1,25 @@
+build objects from classes to represent individual sorties and persons
+
+Each person object will have the following variables
+- first name
+- last name
+- crew position
+- rank
+
+- FILTER
+	- array of appointments… each appointment will contain
+		- start date
+		- end date
+		- description
+		- boolean to represent fly/no fly
+	- DNIF/no fly status
+		- optional auto enable fly status by date
+- SORT
+	- total look-back (past month & past 3 months) [probably best to track all sorties a person has completed]
+	- rap (ignoring for now cause its an animal I don’t understand yet)
+
+Each sortie object will have the following variables
+- sortie number (string)
+- t/o & t/d dates (add option to specify explicit t/o & t/d dates/times, otherwise assume same day/all day)
+- array of persons currently loaded on that sortie
+- array of persons still required to afford sortie requirements
