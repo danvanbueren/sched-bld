@@ -9,11 +9,10 @@ public class Main {
 
 	public static void main(String args[]) {
 
-		// Window.createGUI();
-
 		DatabaseComposer.load();
-
-		doMenu();
+		
+		Window.build();
+		// doMenu();
 		sc.close();
 
 	}
