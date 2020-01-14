@@ -69,7 +69,7 @@ public class GUITelescope {
 		listModelPeople = new DefaultListModel<String>();
 		
 		for(Person p : Main.personIndex) {
-			listModelPeople.addElement(p.nameLast);
+			listModelPeople.addElement(p.rank + " " + p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + " - " + p.crewPos + " [" + p.shop + "] [" + p.flight + "]");
 		}
 		
 		listPeople.setModel(listModelPeople);
@@ -208,7 +208,7 @@ public class GUITelescope {
 		listModelPeople.clear();
 		
 		for(Person p : Main.personIndex) {
-			listModelPeople.addElement(p.nameLast);
+			listModelPeople.addElement(p.rank + " " + p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + " - " + p.crewPos + " [" + p.shop + "] [" + p.flight + "]");
 		}
 		
 		listPeople.setModel(listModelPeople);
