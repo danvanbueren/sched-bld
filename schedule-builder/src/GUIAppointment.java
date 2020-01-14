@@ -1,29 +1,30 @@
-import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-public class AppointmentGUI {
+public class GUIAppointment {
 
-	private JFrame frmTelescopeAppointment;
+	private JFrame frame;
 	private JTextField txtDdmmmyyyy;
 	private JTextField txtDdmmmyyyy_1;
 	private JTextField txtBriefDescriptionOf;
 
 	/**
 	 * Launch the application.
-	 */
+	 *
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AppointmentGUI window = new AppointmentGUI();
-					window.frmTelescopeAppointment.setVisible(true);
+					AppointmentGUI window = new AppointmentGUI(1);
+					window.getFrmTelescopeAppointment().setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -31,26 +32,25 @@ public class AppointmentGUI {
 		});
 	}
 
-	/**
+	**
 	 * Create the application.
 	 */
-	public AppointmentGUI() {
-		initialize();
+	public GUIAppointment(int mode) {
+		initialize(mode);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
-		frmTelescopeAppointment = new JFrame();
-		frmTelescopeAppointment.setTitle("Telescope - Appointment - (Add/Edit)");
-		frmTelescopeAppointment.setBounds(100, 100, 450, 300);
-		frmTelescopeAppointment.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmTelescopeAppointment.getContentPane().setLayout(null);
+	private void initialize(int mode) {
+		setFrmTelescopeAppointment(new JFrame());
+		getFrmTelescopeAppointment().setTitle("Telescope - Appointment - (Add/Edit)");
+		getFrmTelescopeAppointment().setBounds(100, 100, 450, 300);
+		getFrmTelescopeAppointment().getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 450, 278);
-		frmTelescopeAppointment.getContentPane().add(panel);
+		getFrmTelescopeAppointment().getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Start Date");
@@ -92,8 +92,26 @@ public class AppointmentGUI {
 		comboBox.setBounds(6, 106, 200, 20);
 		panel.add(comboBox);
 		
-		JButton btnNewButton = new JButton("Submit");
-		btnNewButton.setBounds(6, 186, 200, 40);
-		panel.add(btnNewButton);
+		JButton btnSubmit = new JButton("Submit");
+		btnSubmit.setBounds(6, 186, 200, 40);
+		panel.add(btnSubmit);
+		
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(true) {
+					frame.setVisible(false);
+					frame.dispose();
+				}
+					
+			}
+		});
+	}
+
+	public JFrame getFrmTelescopeAppointment() {
+		return frame;
+	}
+
+	public void setFrmTelescopeAppointment(JFrame frmTelescopeAppointment) {
+		this.frame = frmTelescopeAppointment;
 	}
 }

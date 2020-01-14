@@ -1,3 +1,4 @@
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -11,7 +12,19 @@ public class Main {
 
 		DatabaseComposer.load();
 		
-		Window.build();
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					GUITelescope window = new GUITelescope();
+					window.getFrame().setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		
 		// doMenu();
 		sc.close();
 
