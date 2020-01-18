@@ -1,3 +1,4 @@
+package projDemo;
 import java.util.ArrayList;
 
 public class DatabaseComposer {
@@ -92,6 +93,7 @@ public class DatabaseComposer {
 					String social = inputBuffer[currentLine + 11];
 
 					// THIS NEEDS TO BE FIXED
+					@SuppressWarnings("unused")
 					String calendarString = inputBuffer[currentLine + 12];
 					ArrayList<Appointment> calendar = new ArrayList<>();
 

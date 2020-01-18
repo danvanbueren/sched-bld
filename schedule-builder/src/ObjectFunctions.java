@@ -1,3 +1,4 @@
+package projDemo;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -327,4 +328,12 @@ public class ObjectFunctions {
 		return loadList;
 	}
 
+	public static void systemCreateAppointment(Person p) {
+		LocalDate startDate = null, endDate = null;
+		boolean isFlyable = true;
+		String description = null;
+		Appointment a = new Appointment(startDate, endDate, isFlyable, description);
+		p.calendar.add(a);
+	}
+	
 }

@@ -1,8 +1,10 @@
+package projDemo;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,12 +15,14 @@ public class GUIPerson {
 	private JFrame frame;
 	private PTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
 	boolean createNew;
-	
+	JList<String> list;
+	JButton btnAddAppointment;
+	DefaultListModel<String> listModel;
+
 	JButton btnDelete;
-	
+
 	Person p;
-	
-	
+
 	/**
 	 * Launch the application.
 	 *
@@ -47,7 +51,7 @@ public class GUIPerson {
 	 */
 
 	private void initialize() {
-		
+
 		createNew = true;
 
 		setFrmTelescopeAdd(new JFrame());
@@ -55,24 +59,14 @@ public class GUIPerson {
 		getFrame().setBounds(100, 100, 500, 500);
 		getFrame().getContentPane().setLayout(null);
 
-		JList<String> list = new JList<String>();
-		list.setModel(new AbstractListModel<String>() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = -322245715788744180L;
-			String[] values = new String[] { "Appointment 1", "Appointment 2", "Appointment 3", "Appointment 4" };
+		list = new JList<String>();
 
-			public int getSize() {
-				return values.length;
-			}
+		listModel = new DefaultListModel<String>();
+		list.setModel(listModel);
 
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
 		list.setBounds(260, 26, 234, 406);
 		getFrame().getContentPane().add(list);
+		list.setEnabled(false);
 
 		txtNmM = new PTextField("e.x. Jack", true);
 		txtNmM.setColumns(10);
@@ -137,9 +131,10 @@ public class GUIPerson {
 		lblFlight.setBounds(6, 206, 151, 20);
 		getFrame().getContentPane().add(lblFlight);
 
-		JButton btnAddAppointment = new JButton("Add Appointment");
+		btnAddAppointment = new JButton("Add Appointment");
 		btnAddAppointment.setBounds(260, 6, 234, 20);
 		getFrame().getContentPane().add(btnAddAppointment);
+		btnAddAppointment.setEnabled(false);
 
 		txtPhone = new PTextField("e.x. (000) 000-0000", true);
 		txtPhone.setColumns(10);
@@ -175,8 +170,9 @@ public class GUIPerson {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							GUIAppointment window = new GUIAppointment(0);
+							GUIAppointment window = new GUIAppointment(p);
 							window.getFrmTelescopeAppointment().setVisible(true);
+							refreshList();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -189,6 +185,7 @@ public class GUIPerson {
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (createNew) {
+					@SuppressWarnings("unused")
 					Person person = new Person(txtRank.getText(), txtNmF.getText(), txtNmM.getText(), txtNmL.getText(),
 							txtCrewPos.getText(), txtShop.getText(), txtFlight.getText(), txtPhone.getText(),
 							txtAddr.getText(), txtId.getText());
@@ -203,21 +200,21 @@ public class GUIPerson {
 					p.phoneNumber = txtPhone.getText();
 					p.address = txtAddr.getText();
 					p.social = txtId.getText();
-					
+
 				}
 				GUITelescope.refreshPersonList();
 				frame.setVisible(false);
 				frame.dispose();
-				
+
 			}
 		});
 	}
-	
+
 	private void initLoad(Person p) {
 		this.p = p;
-		
+
 		createNew = false;
-		
+
 		getFrame().setTitle("Telescope - Person (Edit: " + p.nameLast + ")");
 		txtNmF.setTextFill(p.nameFirst);
 		txtNmM.setTextFill(p.nameMiddle);
@@ -229,23 +226,38 @@ public class GUIPerson {
 		txtFlight.setTextFill(p.flight);
 		txtRank.setTextFill(p.rank);
 		txtShop.setTextFill(p.shop);
+
+		list.setEnabled(true);
+		refreshList();
 		
+		btnAddAppointment.setEnabled(true);
+
 		btnDelete = new JButton("Delete");
 		btnDelete.setBounds(6, 437, 234, 35);
 		getFrame().getContentPane().add(btnDelete);
-		
-		
+
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				Main.personIndex.remove(p);
-				
+
 				GUITelescope.refreshPersonList();
 				frame.setVisible(false);
 				frame.dispose();
-				
+
 			}
 		});
+	}
+
+	public void refreshList() {
+		listModel.clear();
+		for (Appointment a : p.calendar) {
+			listModel.addElement(a.startDate + " - " + a.description);
+			System.out.println(a.description);
+		}
+
+		list.setModel(listModel);
+		System.out.println("refresh list");
 	}
 
 	public JFrame getFrame() {

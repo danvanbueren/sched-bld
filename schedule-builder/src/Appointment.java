@@ -1,3 +1,4 @@
+package projDemo;
 import java.time.LocalDate;
 
 public class Appointment {
@@ -7,7 +8,7 @@ public class Appointment {
 	String description;
 
 	public Appointment(LocalDate startDate, LocalDate endDate, boolean isFlyable, String description) {
-
+		
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.isFlyable = isFlyable;

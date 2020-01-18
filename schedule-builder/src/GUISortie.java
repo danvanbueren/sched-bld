@@ -1,3 +1,4 @@
+package projDemo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,13 +34,14 @@ public class GUISortie {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings({ "unchecked", "serial", "rawtypes" })
 	private void initialize(int mode) {
 		setFrame(new JFrame());
 		getFrame().setTitle("Telescope - Sortie - (Add/Edit)");
 		getFrame().setBounds(100, 100, 500, 500);
 		getFrame().getContentPane().setLayout(null);
 
-		JList list = new JList();
+		JList<String> list = new JList<String>();
 		list.setModel(new AbstractListModel() {
 			String[] values = new String[] { "Person 1", "Person 2", "Person 3", "Person 4" };
 
@@ -54,7 +56,7 @@ public class GUISortie {
 		list.setBounds(260, 49, 234, 383);
 		getFrame().getContentPane().add(list);
 
-		JList list_1 = new JList();
+		JList<String> list_1 = new JList<String>();
 		list_1.setModel(new AbstractListModel() {
 			String[] values = new String[] { "Person 5", "Person 6", "Person 7" };
 
@@ -81,8 +83,8 @@ public class GUISortie {
 		txtDdmmmyyyy.setBounds(6, 71, 234, 26);
 		getFrame().getContentPane().add(txtDdmmmyyyy);
 
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(
+		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.setModel(new DefaultComboBoxModel<String>(
 				new String[] { "J-Sortie", "T-Sortie", "P-Sortie", "X-Sortie", "S-Sortie", "W-Sortie" }));
 		comboBox.setBounds(5, 171, 243, 27);
 		getFrame().getContentPane().add(comboBox);
@@ -95,9 +97,9 @@ public class GUISortie {
 		lblSortieType.setBounds(5, 147, 151, 25);
 		getFrame().getContentPane().add(lblSortieType);
 
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] { "960 AACS", "961 AACS", "962 AACS", "963 AACS",
-				"964 AACS", "965 AACS", "966 AACS", "970 AACS" }));
+		JComboBox<String> comboBox_1 = new JComboBox<String>();
+		comboBox_1.setModel(new DefaultComboBoxModel<String>(new String[] { "960 AACS", "961 AACS", "962 AACS",
+				"963 AACS", "964 AACS", "965 AACS", "966 AACS", "970 AACS" }));
 		comboBox_1.setBounds(6, 121, 243, 27);
 		getFrame().getContentPane().add(comboBox_1);
 
