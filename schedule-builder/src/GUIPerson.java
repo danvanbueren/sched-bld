@@ -9,11 +9,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JTextField;
 
 public class GUIPerson {
 
 	private JFrame frame;
-	private PTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
+	private JTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
 	boolean createNew;
 	JList<String> list;
 	JButton btnAddAppointment;
@@ -23,17 +24,6 @@ public class GUIPerson {
 
 	Person p;
 
-	/**
-	 * Launch the application.
-	 *
-	 * public static void main(String[] args) { EventQueue.invokeLater(new
-	 * Runnable() { public void run() { try { PersonGUI window = new PersonGUI(1);
-	 * window.getFrmTelescopeAdd().setVisible(true); } catch (Exception e) {
-	 * e.printStackTrace(); } } }); }
-	 **
-	 * 
-	 * Create the application.
-	 */
 	public GUIPerson() {
 		initialize();
 	}
@@ -42,13 +32,6 @@ public class GUIPerson {
 		initialize();
 		initLoad(p);
 	}
-	/*
-	 * public PersonGUI(Person p) { initialize(1); }
-	 */
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
 
 	private void initialize() {
 
@@ -68,12 +51,12 @@ public class GUIPerson {
 		getFrame().getContentPane().add(list);
 		list.setEnabled(false);
 
-		txtNmM = new PTextField("e.x. Jack", true);
+		txtNmM = new JTextField();
 		txtNmM.setColumns(10);
 		txtNmM.setBounds(6, 66, 234, 20);
 		getFrame().getContentPane().add(txtNmM);
 
-		txtCrewPos = new PTextField("e.x. AST", true);
+		txtCrewPos = new JTextField();
 		txtCrewPos.setBounds(6, 186, 234, 20);
 		getFrame().getContentPane().add(txtCrewPos);
 
@@ -81,7 +64,7 @@ public class GUIPerson {
 		lblSortieType.setBounds(6, 166, 151, 20);
 		getFrame().getContentPane().add(lblSortieType);
 
-		txtRank = new PTextField("e.x. E-7", true);
+		txtRank = new JTextField();
 		txtRank.setBounds(6, 146, 234, 20);
 		getFrame().getContentPane().add(txtRank);
 
@@ -93,7 +76,7 @@ public class GUIPerson {
 		lblEndDate.setBounds(6, 46, 151, 20);
 		getFrame().getContentPane().add(lblEndDate);
 
-		txtNmF = new PTextField("e.x. John", true);
+		txtNmF = new JTextField();
 		txtNmF.setColumns(10);
 		txtNmF.setBounds(6, 26, 234, 20);
 		getFrame().getContentPane().add(txtNmF);
@@ -106,7 +89,7 @@ public class GUIPerson {
 		btnSubmit.setBounds(260, 437, 234, 35);
 		getFrame().getContentPane().add(btnSubmit);
 
-		txtNmL = new PTextField("e.x. Doe", true);
+		txtNmL = new JTextField();
 		txtNmL.setColumns(10);
 		txtNmL.setBounds(6, 106, 234, 20);
 		getFrame().getContentPane().add(txtNmL);
@@ -115,7 +98,7 @@ public class GUIPerson {
 		lblLastName.setBounds(6, 86, 151, 20);
 		getFrame().getContentPane().add(lblLastName);
 
-		txtShop = new PTextField("e.x. CSS", true);
+		txtShop = new JTextField();
 		txtShop.setBounds(6, 266, 234, 20);
 		getFrame().getContentPane().add(txtShop);
 
@@ -123,7 +106,7 @@ public class GUIPerson {
 		lblShop.setBounds(6, 246, 151, 20);
 		getFrame().getContentPane().add(lblShop);
 
-		txtFlight = new PTextField("e.x. J-Flight", true);
+		txtFlight = new JTextField();
 		txtFlight.setBounds(6, 226, 234, 20);
 		getFrame().getContentPane().add(txtFlight);
 
@@ -136,7 +119,7 @@ public class GUIPerson {
 		getFrame().getContentPane().add(btnAddAppointment);
 		btnAddAppointment.setEnabled(false);
 
-		txtPhone = new PTextField("e.x. (000) 000-0000", true);
+		txtPhone = new JTextField();
 		txtPhone.setColumns(10);
 		txtPhone.setBounds(6, 306, 234, 20);
 		getFrame().getContentPane().add(txtPhone);
@@ -145,7 +128,7 @@ public class GUIPerson {
 		lblPhoneNumber.setBounds(6, 286, 151, 20);
 		getFrame().getContentPane().add(lblPhoneNumber);
 
-		txtAddr = new PTextField("e.x. 0000 Name St., City, ST 00000", true);
+		txtAddr = new JTextField();
 		txtAddr.setColumns(10);
 		txtAddr.setBounds(6, 346, 234, 20);
 		getFrame().getContentPane().add(txtAddr);
@@ -154,7 +137,7 @@ public class GUIPerson {
 		lblAddress.setBounds(6, 326, 151, 20);
 		getFrame().getContentPane().add(lblAddress);
 
-		txtId = new PTextField("e.x. 000-00-0000", true);
+		txtId = new JTextField();
 		txtId.setEnabled(false);
 		txtId.setColumns(10);
 		txtId.setBounds(6, 386, 234, 20);
@@ -216,20 +199,20 @@ public class GUIPerson {
 		createNew = false;
 
 		getFrame().setTitle("Telescope - Person (Edit: " + p.nameLast + ")");
-		txtNmF.setTextFill(p.nameFirst);
-		txtNmM.setTextFill(p.nameMiddle);
-		txtNmL.setTextFill(p.nameLast);
-		txtAddr.setTextFill(p.address);
-		txtId.setTextFill(p.social);
-		txtPhone.setTextFill(p.phoneNumber);
-		txtCrewPos.setTextFill(p.crewPos);
-		txtFlight.setTextFill(p.flight);
-		txtRank.setTextFill(p.rank);
-		txtShop.setTextFill(p.shop);
+		txtNmF.setText(p.nameFirst);
+		txtNmM.setText(p.nameMiddle);
+		txtNmL.setText(p.nameLast);
+		txtAddr.setText(p.address);
+		txtId.setText(p.social);
+		txtPhone.setText(p.phoneNumber);
+		txtCrewPos.setText(p.crewPos);
+		txtFlight.setText(p.flight);
+		txtRank.setText(p.rank);
+		txtShop.setText(p.shop);
 
 		list.setEnabled(true);
 		refreshList();
-		
+
 		btnAddAppointment.setEnabled(true);
 
 		btnDelete = new JButton("Delete");

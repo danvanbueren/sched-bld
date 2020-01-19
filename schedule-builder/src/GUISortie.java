@@ -18,22 +18,10 @@ public class GUISortie {
 	private JTextField txtDdmmmyyyy;
 	private JTextField txtDdmmmyyyy_1;
 
-	/*
-	 * public void editSortie() { EventQueue.invokeLater(new Runnable() { public
-	 * void run() { try { SortieGUI window = new SortieGUI(1);
-	 * window.getFrame().setVisible(true); } catch (Exception e) {
-	 * e.printStackTrace(); } } }); }
-	 **
-	 * 
-	 * Create the application.
-	 */
 	public GUISortie(int mode) {
 		initialize(mode);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	@SuppressWarnings({ "unchecked", "serial", "rawtypes" })
 	private void initialize(int mode) {
 		setFrame(new JFrame());

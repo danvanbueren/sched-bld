@@ -20,24 +20,10 @@ public class GUIAppointment {
 	private JFormattedTextField ftfDateEnd;
 	private JFormattedTextField ftfDescription;
 
-	/**
-	 * Launch the application.
-	 *
-	 * public static void main(String[] args) { EventQueue.invokeLater(new
-	 * Runnable() { public void run() { try { AppointmentGUI window = new
-	 * AppointmentGUI(1); window.getFrmTelescopeAppointment().setVisible(true); }
-	 * catch (Exception e) { e.printStackTrace(); } } }); }
-	 **
-	 * 
-	 * Create the application.
-	 */
 	public GUIAppointment(Person p) {
 		initialize(p);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize(Person p) {
 		setFrmTelescopeAppointment(new JFrame());
 		getFrmTelescopeAppointment().setTitle("Telescope - Appointment - (Add/Edit)");
