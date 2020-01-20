@@ -15,5 +15,4 @@ public class Appointment {
 		this.description = description;
 
 	}
-
 }

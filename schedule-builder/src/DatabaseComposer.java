@@ -74,12 +74,7 @@ public class DatabaseComposer {
 			int currentLine = 0;
 
 			for (String s : inputBuffer) {
-				// System.out.println(currentLine + ". " + s);
-
 				if (s.contentEquals("@")) {
-					// System.out.println("PERSON! " + currentLine + ". " +
-					// inputBuffer[currentLine]);
-
 					String uuid = inputBuffer[currentLine + 1];
 					String rank = inputBuffer[currentLine + 2];
 					String nameFirst = inputBuffer[currentLine + 3];
@@ -92,7 +87,6 @@ public class DatabaseComposer {
 					String address = inputBuffer[currentLine + 10];
 					String social = inputBuffer[currentLine + 11];
 
-					// THIS NEEDS TO BE FIXED
 					@SuppressWarnings("unused")
 					String calendarString = inputBuffer[currentLine + 12];
 					ArrayList<Appointment> calendar = new ArrayList<>();
@@ -104,9 +98,6 @@ public class DatabaseComposer {
 				}
 
 				if (s.contentEquals("%")) {
-					// System.out.println("SORTIE! " + currentLine + ". " +
-					// inputBuffer[currentLine]);
-
 					String uuid = inputBuffer[currentLine + 1];
 					String sortieNumber = inputBuffer[currentLine + 2];
 					String startDate = inputBuffer[currentLine + 3];
@@ -124,15 +115,6 @@ public class DatabaseComposer {
 
 				currentLine++;
 			}
-
-			// String[] readBuffer = ReadWriteIO.read().split("\\~");
-			// String loadList = readBuffer[5];
-
-			// Sortie s = new Sortie(DataConvert.fromStringToUUID(readBuffer[1]),
-			// readBuffer[2], DataConvert.fromStringToLocalDate(readBuffer[3]),
-			// DataConvert.fromStringToLocalDate(readBuffer[4])/* , loadList */);
-
-			// LOAD PERSON OBJECTS INTO SORTIES
 
 			for (Sortie s : Main.sortieIndex) {
 				for (String st : s.loadListTemp) {

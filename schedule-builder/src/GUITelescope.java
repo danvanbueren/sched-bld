@@ -39,6 +39,7 @@ public class GUITelescope {
 		getFrame().setBounds(100, 100, 720, 480);
 		getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getFrame().getContentPane().setLayout(null);
+		getFrame().setResizable(false);
 
 		JTabbedPane tabbedPaneMain = new JTabbedPane(JTabbedPane.TOP);
 		JPanel panelAdmin = new JPanel();
@@ -120,7 +121,7 @@ public class GUITelescope {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							GUISortie window = new GUISortie(0);
+							GUISortie window = new GUISortie();
 							window.getFrame().setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -142,7 +143,7 @@ public class GUITelescope {
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {
 							try {
-								GUISortie window = new GUISortie(0);
+								GUISortie window = new GUISortie();
 								window.getFrame().setVisible(true);
 							} catch (Exception e) {
 								e.printStackTrace();

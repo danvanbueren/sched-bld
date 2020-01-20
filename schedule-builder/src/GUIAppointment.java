@@ -20,19 +20,20 @@ public class GUIAppointment {
 	private JFormattedTextField ftfDateEnd;
 	private JFormattedTextField ftfDescription;
 
-	public GUIAppointment(Person p) {
-		initialize(p);
+	public GUIAppointment(Person p, Runnable runnable) {
+		initialize(p, runnable);
 	}
 
-	private void initialize(Person p) {
-		setFrmTelescopeAppointment(new JFrame());
-		getFrmTelescopeAppointment().setTitle("Telescope - Appointment - (Add/Edit)");
-		getFrmTelescopeAppointment().setBounds(100, 100, 450, 300);
-		getFrmTelescopeAppointment().getContentPane().setLayout(null);
+	private void initialize(Person p, Runnable runnable) {
+		setFrame(new JFrame());
+		getFrame().setTitle("Telescope - Appointment - (Add/Edit)");
+		getFrame().setBounds(100, 100, 450, 300);
+		getFrame().getContentPane().setLayout(null);
+		getFrame().setResizable(false);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 450, 278);
-		getFrmTelescopeAppointment().getContentPane().add(panel);
+		getFrame().getContentPane().add(panel);
 		panel.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Start Date");
@@ -107,6 +108,8 @@ public class GUIAppointment {
 					Appointment a = new Appointment(startDate, endDate, isFlyable, description);
 					p.calendar.add(a);
 
+					((GUIPerson) runnable).refreshList();
+					
 					frame.setVisible(false);
 					frame.dispose();
 				}
@@ -115,11 +118,11 @@ public class GUIAppointment {
 		});
 	}
 
-	public JFrame getFrmTelescopeAppointment() {
+	public JFrame getFrame() {
 		return frame;
 	}
 
-	public void setFrmTelescopeAppointment(JFrame frmTelescopeAppointment) {
-		this.frame = frmTelescopeAppointment;
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
 	}
 }

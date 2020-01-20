@@ -30,23 +30,34 @@ public class GUIPerson {
 
 	public GUIPerson(Person p) {
 		initialize();
-		initLoad(p);
+		initializeExisting(p);
 	}
 
 	private void initialize() {
 
 		createNew = true;
 
+		JLabel lblSortieType = new JLabel("Crew Position");
+		JLabel lblSquadron = new JLabel("Rank");
+		JLabel lblEndDate = new JLabel("Middle Name");
+		JLabel lblFirstName = new JLabel("First Name");
+		JButton btnSubmit = new JButton("Submit");
+		JLabel lblLastName = new JLabel("Last Name");
+		JLabel lblShop = new JLabel("Shop");
+		JLabel lblFlight = new JLabel("Flight");
+		JLabel lblPhoneNumber = new JLabel("Phone Number");
+		JLabel lblAddress = new JLabel("Address");
+		JLabel lblSocial = new JLabel("Individual Identifier");
+
 		setFrmTelescopeAdd(new JFrame());
 		getFrame().setTitle("Telescope - Person (Add)");
 		getFrame().setBounds(100, 100, 500, 500);
 		getFrame().getContentPane().setLayout(null);
+		getFrame().setResizable(false);
 
 		list = new JList<String>();
-
 		listModel = new DefaultListModel<String>();
 		list.setModel(listModel);
-
 		list.setBounds(260, 26, 234, 406);
 		getFrame().getContentPane().add(list);
 		list.setEnabled(false);
@@ -60,7 +71,6 @@ public class GUIPerson {
 		txtCrewPos.setBounds(6, 186, 234, 20);
 		getFrame().getContentPane().add(txtCrewPos);
 
-		JLabel lblSortieType = new JLabel("Crew Position");
 		lblSortieType.setBounds(6, 166, 151, 20);
 		getFrame().getContentPane().add(lblSortieType);
 
@@ -68,11 +78,9 @@ public class GUIPerson {
 		txtRank.setBounds(6, 146, 234, 20);
 		getFrame().getContentPane().add(txtRank);
 
-		JLabel lblSquadron = new JLabel("Rank");
 		lblSquadron.setBounds(6, 126, 151, 20);
 		getFrame().getContentPane().add(lblSquadron);
 
-		JLabel lblEndDate = new JLabel("Middle Name");
 		lblEndDate.setBounds(6, 46, 151, 20);
 		getFrame().getContentPane().add(lblEndDate);
 
@@ -81,11 +89,9 @@ public class GUIPerson {
 		txtNmF.setBounds(6, 26, 234, 20);
 		getFrame().getContentPane().add(txtNmF);
 
-		JLabel lblFirstName = new JLabel("First Name");
 		lblFirstName.setBounds(6, 6, 151, 20);
 		getFrame().getContentPane().add(lblFirstName);
 
-		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setBounds(260, 437, 234, 35);
 		getFrame().getContentPane().add(btnSubmit);
 
@@ -94,7 +100,6 @@ public class GUIPerson {
 		txtNmL.setBounds(6, 106, 234, 20);
 		getFrame().getContentPane().add(txtNmL);
 
-		JLabel lblLastName = new JLabel("Last Name");
 		lblLastName.setBounds(6, 86, 151, 20);
 		getFrame().getContentPane().add(lblLastName);
 
@@ -102,7 +107,6 @@ public class GUIPerson {
 		txtShop.setBounds(6, 266, 234, 20);
 		getFrame().getContentPane().add(txtShop);
 
-		JLabel lblShop = new JLabel("Shop");
 		lblShop.setBounds(6, 246, 151, 20);
 		getFrame().getContentPane().add(lblShop);
 
@@ -110,7 +114,6 @@ public class GUIPerson {
 		txtFlight.setBounds(6, 226, 234, 20);
 		getFrame().getContentPane().add(txtFlight);
 
-		JLabel lblFlight = new JLabel("Flight");
 		lblFlight.setBounds(6, 206, 151, 20);
 		getFrame().getContentPane().add(lblFlight);
 
@@ -124,7 +127,6 @@ public class GUIPerson {
 		txtPhone.setBounds(6, 306, 234, 20);
 		getFrame().getContentPane().add(txtPhone);
 
-		JLabel lblPhoneNumber = new JLabel("Phone Number");
 		lblPhoneNumber.setBounds(6, 286, 151, 20);
 		getFrame().getContentPane().add(lblPhoneNumber);
 
@@ -133,7 +135,6 @@ public class GUIPerson {
 		txtAddr.setBounds(6, 346, 234, 20);
 		getFrame().getContentPane().add(txtAddr);
 
-		JLabel lblAddress = new JLabel("Address");
 		lblAddress.setBounds(6, 326, 151, 20);
 		getFrame().getContentPane().add(lblAddress);
 
@@ -143,7 +144,6 @@ public class GUIPerson {
 		txtId.setBounds(6, 386, 234, 20);
 		getFrame().getContentPane().add(txtId);
 
-		JLabel lblSocial = new JLabel("Individual Identifier");
 		lblSocial.setBounds(6, 366, 151, 20);
 		getFrame().getContentPane().add(lblSocial);
 
@@ -153,8 +153,8 @@ public class GUIPerson {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							GUIAppointment window = new GUIAppointment(p);
-							window.getFrmTelescopeAppointment().setVisible(true);
+							GUIAppointment window = new GUIAppointment(p, this);
+							window.getFrame().setVisible(true);
 							refreshList();
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -193,7 +193,7 @@ public class GUIPerson {
 		});
 	}
 
-	private void initLoad(Person p) {
+	private void initializeExisting(Person p) {
 		this.p = p;
 
 		createNew = false;

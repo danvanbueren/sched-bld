@@ -23,7 +23,7 @@ public class ReadWriteIO {
 				ch = fileInputStream.read();
 			}
 		} catch (FileNotFoundException e) {
-			System.err.println("Database file does not exist.");
+			System.out.println("Creating db file.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
