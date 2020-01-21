@@ -3,6 +3,7 @@ package projDemo;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.UUID;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -12,6 +13,8 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 
 public class GUIPerson {
+
+	public UUID windowSignature;
 
 	private JFrame frame;
 	private JTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
@@ -34,6 +37,10 @@ public class GUIPerson {
 	}
 
 	private void initialize() {
+
+		windowSignature = UUID.randomUUID();
+
+		GUITelescope.personWindowSignatures.add(this);
 
 		createNew = true;
 
@@ -153,9 +160,8 @@ public class GUIPerson {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							GUIAppointment window = new GUIAppointment(p, this);
+							GUIAppointment window = new GUIAppointment(p, windowSignature);
 							window.getFrame().setVisible(true);
-							refreshList();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

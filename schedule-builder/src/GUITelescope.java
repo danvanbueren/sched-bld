@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -20,14 +21,18 @@ import javax.swing.SwingConstants;
 
 public class GUITelescope {
 
+	public static ArrayList<GUIPerson> personWindowSignatures = new ArrayList<GUIPerson>();
+
 	private JFrame frame;
 
 	static JList<String> listSorties;
-
 	static JList<String> listPeople;
-	static DefaultListModel<String> listModelSorties;
 
+	static DefaultListModel<String> listModelSorties;
 	static DefaultListModel<String> listModelPeople;
+
+	static JScrollPane listSortiesContainer;
+	static JScrollPane listPeopleContainer;
 
 	public GUITelescope() {
 		initialize();
@@ -53,7 +58,7 @@ public class GUITelescope {
 		JScrollPane scrollPaneSettings = new JScrollPane();
 		JLabel lblNewLabel = new JLabel("Preferred Squadron");
 		JComboBox<String> comboBox = new JComboBox<String>();
-		
+
 		tabbedPaneMain.setBounds(6, 6, 708, 446);
 		getFrame().getContentPane().add(tabbedPaneMain);
 
@@ -66,7 +71,7 @@ public class GUITelescope {
 		panelPeople.setBounds(0, 0, 343, 400);
 		panelAdmin.add(panelPeople);
 		panelPeople.setLayout(null);
-		
+
 		lblPeople.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPeople.setBounds(0, 0, 343, 20);
 		panelPeople.add(lblPeople);
@@ -80,8 +85,10 @@ public class GUITelescope {
 		}
 
 		listPeople.setModel(listModelPeople);
+		listPeopleContainer = new JScrollPane(listPeople);
 		listPeople.setBounds(0, 20, 343, 360);
-		panelPeople.add(listPeople);
+		listPeopleContainer.setBounds(0, 20, 343, 360);
+		panelPeople.add(listPeopleContainer);
 
 		btnPeople.setBounds(0, 380, 343, 20);
 		panelPeople.add(btnPeople);
@@ -102,12 +109,13 @@ public class GUITelescope {
 		}
 
 		listSorties.setModel(listModelSorties);
+		listSortiesContainer = new JScrollPane(listSorties);
 		listSorties.setBounds(0, 20, 343, 360);
-		panelSorties.add(listSorties);
+		listSortiesContainer.setBounds(0, 20, 343, 360);
+		panelSorties.add(listSortiesContainer);
 
 		btnSorties.setBounds(0, 380, 343, 20);
 		panelSorties.add(btnSorties);
-
 
 		scrollPaneSettings.setRowHeaderView(lblNewLabel);
 
