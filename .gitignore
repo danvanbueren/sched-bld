@@ -1,5 +1,5 @@
 # Mac OS files
-*.ds_store
+*.DS_Store
 
 # Compiled class file
 *.class
