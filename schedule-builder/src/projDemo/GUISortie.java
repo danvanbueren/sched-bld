@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -24,17 +25,81 @@ public class GUISortie {
 	private JFrame frame;
 	private JTextField txtFilter;
 
+	DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
+
+	DefaultListModel<String> modelRoster, modelLoadlist;
+	JList<String> listRoster, listLoadlist;
+
+	JLabel lblLoadlist, lblFilter, lblSortieType, lblSquadron, lblEndDate, lblStartDate, lblSame;
+	JComboBox<String> comboSortieType, comboSquadron;
+	JFormattedTextField txtEndDate, txtStartDate;
+	JCheckBox chckSameDate;
+	JButton btnSubmit, btnDelete;
+
+	boolean createNew;
+
+	Sortie s;
+
 	public GUISortie() {
 		initialize();
 	}
 
+	public GUISortie(Sortie s) {
+		initialize();
+		initializeExisting(s);
+	}
+
+	private void initializeExisting(Sortie s) {
+		this.s = s;
+		createNew = false;
+
+		getFrame().setTitle("Telescope - Sortie (Edit: " + s.sortieNumber + ")");
+
+		txtStartDate.setText(s.startDate.format(formatter));
+		txtEndDate.setText(s.endDate.format(formatter));
+
+		comboSquadron.setSelectedItem("96" + s.sortieNumber.charAt(1) + " AACS");
+		/*
+		 * THE ABOVE ITEM IS BROKEN AND NEEDS TO BE DONE PROPERLY (DOES NOT INCLUDE
+		 * 70th)
+		 */
+
+		comboSortieType.setSelectedItem(s.sortieNumber.charAt(2) + "-Sortie");
+
+		listRoster.setEnabled(true);
+		listLoadlist.setEnabled(true);
+		refreshLists();
+
+		btnSubmit.setBounds(260, 437, 117, 35);
+
+		btnDelete = new JButton("Delete");
+		btnDelete.setBounds(377, 437, 117, 35);
+		getFrame().getContentPane().add(btnDelete);
+
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				Main.sortieIndex.remove(s);
+
+				GUITelescope.refreshSortieList();
+				frame.setVisible(false);
+				frame.dispose();
+
+			}
+		});
+
+	}
+
 	private void initialize() {
+
+		createNew = true;
 
 		/*
 		 * Frame Settings
 		 */
 		setFrame(new JFrame());
-		getFrame().setTitle("Telescope - Sortie - (Add/Edit)");
+		getFrame().setTitle("Telescope - Sortie (Add)");
 		getFrame().setBounds(100, 100, 500, 500);
 		getFrame().getContentPane().setLayout(null);
 		getFrame().setResizable(false);
@@ -42,8 +107,8 @@ public class GUISortie {
 		/*
 		 * Roster List
 		 */
-		DefaultListModel<String> modelRoster = new DefaultListModel<String>();
-		JList<String> listRoster = new JList<String>();
+		modelRoster = new DefaultListModel<String>();
+		listRoster = new JList<String>();
 		listRoster.setModel(modelRoster);
 		listRoster.setBounds(260, 40, 234, 392);
 		getFrame().getContentPane().add(listRoster);
@@ -51,12 +116,12 @@ public class GUISortie {
 		/*
 		 * Load List
 		 */
-		JLabel lblLoadlist = new JLabel("Loadlist");
+		lblLoadlist = new JLabel("Loadlist");
 		lblLoadlist.setBounds(6, 198, 151, 25);
 		getFrame().getContentPane().add(lblLoadlist);
 
-		DefaultListModel<String> modelLoadlist = new DefaultListModel<String>();
-		JList<String> listLoadlist = new JList<String>();
+		modelLoadlist = new DefaultListModel<String>();
+		listLoadlist = new JList<String>();
 		listLoadlist.setModel(modelLoadlist);
 		listLoadlist.setBounds(6, 223, 244, 249);
 		getFrame().getContentPane().add(listLoadlist);
@@ -74,14 +139,14 @@ public class GUISortie {
 		 * Sortie type
 		 */
 
-		JLabel lblFilter = new JLabel("Filter");
+		lblFilter = new JLabel("Filter");
 		lblFilter.setBounds(260, 12, 40, 25);
 		frame.getContentPane().add(lblFilter);
-		JLabel lblSortieType = new JLabel("Sortie Type");
+		lblSortieType = new JLabel("Sortie Type");
 		lblSortieType.setBounds(5, 147, 151, 25);
 		getFrame().getContentPane().add(lblSortieType);
 
-		JComboBox<String> comboSortieType = new JComboBox<String>();
+		comboSortieType = new JComboBox<String>();
 		comboSortieType.setModel(new DefaultComboBoxModel<String>(
 				new String[] { "J-Sortie", "T-Sortie", "P-Sortie", "X-Sortie", "S-Sortie", "W-Sortie" }));
 		comboSortieType.setBounds(5, 171, 243, 27);
@@ -90,11 +155,11 @@ public class GUISortie {
 		/*
 		 * Squadron
 		 */
-		JLabel lblSquadron = new JLabel("Squadron");
+		lblSquadron = new JLabel("Squadron");
 		lblSquadron.setBounds(6, 97, 151, 25);
 		getFrame().getContentPane().add(lblSquadron);
 
-		JComboBox<String> comboSquadron = new JComboBox<String>();
+		comboSquadron = new JComboBox<String>();
 		comboSquadron.setModel(new DefaultComboBoxModel<String>(new String[] { "960 AACS", "961 AACS", "962 AACS",
 				"963 AACS", "964 AACS", "965 AACS", "966 AACS", "970 AACS" }));
 		comboSquadron.setSelectedItem("963 AACS");
@@ -105,22 +170,20 @@ public class GUISortie {
 		/*
 		 * START / END DATES
 		 */
-		DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-
-		JLabel lblEndDate = new JLabel("End Date");
+		lblEndDate = new JLabel("End Date");
 		lblEndDate.setBounds(6, 49, 100, 25);
 		getFrame().getContentPane().add(lblEndDate);
 
-		JFormattedTextField txtEndDate = new JFormattedTextField(df);
+		txtEndDate = new JFormattedTextField(df);
 		txtEndDate.setColumns(10);
 		txtEndDate.setBounds(6, 71, 234, 26);
 		getFrame().getContentPane().add(txtEndDate);
 
-		JLabel lblStartDate = new JLabel("Start Date (dd-MMM-yyyy)");
+		lblStartDate = new JLabel("Start Date (dd-MMM-yyyy)");
 		lblStartDate.setBounds(6, 6, 170, 25);
 		getFrame().getContentPane().add(lblStartDate);
 
-		JFormattedTextField txtStartDate = new JFormattedTextField(df);
+		txtStartDate = new JFormattedTextField(df);
 
 		txtStartDate.setColumns(10);
 		txtStartDate.setBounds(6, 28, 234, 26);
@@ -129,12 +192,12 @@ public class GUISortie {
 		/*
 		 * Same Date for end date option
 		 */
-		JLabel lblSame = new JLabel("Same?");
+		lblSame = new JLabel("Same?");
 		lblSame.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblSame.setBounds(106, 50, 100, 25);
 		frame.getContentPane().add(lblSame);
 
-		JCheckBox chckSameDate = new JCheckBox("");
+		chckSameDate = new JCheckBox("");
 		chckSameDate.setSelected(true);
 		txtEndDate.setEnabled(false);
 
@@ -178,22 +241,49 @@ public class GUISortie {
 		/*
 		 * SUBMIT
 		 */
-		JButton btnSubmit = new JButton("Submit");
+		btnSubmit = new JButton("Submit");
 		btnSubmit.setBounds(260, 437, 234, 35);
 		getFrame().getContentPane().add(btnSubmit);
 
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (true) {
+				if (createNew) {
 					ObjectFunctions.systemCreateSortie(txtStartDate.getText(), txtEndDate.getText(),
 							comboSquadron.getSelectedItem().toString(), comboSortieType.getSelectedItem().toString());
-					GUITelescope.refreshSortieList();
-					frame.setVisible(false);
-					frame.dispose();
+				} else {
+					s.startDate = DataConvert.fromStringToLocalDate(txtStartDate.getText());
+					s.endDate = DataConvert.fromStringToLocalDate(txtEndDate.getText());
+					s.sortieNumber = DataConvert.toSortieNumber(s.startDate, comboSquadron.getSelectedItem().toString(), comboSortieType.getSelectedItem().toString());
+					/*
+					 * NEED TO ADD LOADLIST!!!
+					 */
 				}
-
+				GUITelescope.refreshSortieList();
+				frame.setVisible(false);
+				frame.dispose();
 			}
 		});
+	}
+
+	public void refreshLists() {
+		modelLoadlist.clear();
+		modelRoster.clear();
+
+		for (Person p : Main.personIndex) {
+			modelRoster.addElement(
+					p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + ", " + p.rank + " - " + p.crewPos);
+			System.out.println(p.nameFirst);
+		}
+
+		for (Person p : s.loadList) {
+			modelLoadlist.addElement(
+					p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + ", " + p.rank + " - " + p.crewPos);
+			System.out.println(p.nameFirst);
+		}
+
+		listLoadlist.setModel(modelLoadlist);
+		listRoster.setModel(modelRoster);
+		System.out.println("refresh list");
 	}
 
 	public JFrame getFrame() {

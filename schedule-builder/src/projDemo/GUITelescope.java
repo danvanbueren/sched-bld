@@ -148,10 +148,11 @@ public class GUITelescope {
 					@SuppressWarnings("unused")
 					int index = list.locationToIndex(evt.getPoint());
 					// viewSortie(index);
+					Sortie s = Main.sortieIndex.get(index);
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {
 							try {
-								GUISortie window = new GUISortie();
+								GUISortie window = new GUISortie(s);
 								window.getFrame().setVisible(true);
 							} catch (Exception e) {
 								e.printStackTrace();
