@@ -25,11 +25,11 @@ public class GUITelescope {
 
 	private JFrame frame;
 
-	static JList<String> listSorties;
-	static JList<String> listPeople;
+	static JList<Sortie> listSorties;
+	static JList<Person> listPeople;
 
-	static DefaultListModel<String> listModelSorties;
-	static DefaultListModel<String> listModelPeople;
+	static DefaultListModel<Sortie> listModelSorties;
+	static DefaultListModel<Person> listModelPeople;
 
 	static JScrollPane listSortiesContainer;
 	static JScrollPane listPeopleContainer;
@@ -76,12 +76,11 @@ public class GUITelescope {
 		lblPeople.setBounds(0, 0, 343, 20);
 		panelPeople.add(lblPeople);
 
-		listPeople = new JList<String>();
-		listModelPeople = new DefaultListModel<String>();
+		listPeople = new JList<Person>();
+		listModelPeople = new DefaultListModel<Person>();
 
 		for (Person p : Main.personIndex) {
-			listModelPeople.addElement(p.rank + " " + p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + " - "
-					+ p.crewPos + " [" + p.shop + "] [" + p.flight + "]");
+			listModelPeople.addElement(p);
 		}
 
 		listPeople.setModel(listModelPeople);
@@ -101,11 +100,11 @@ public class GUITelescope {
 		lblSorties.setBounds(0, 0, 343, 20);
 		panelSorties.add(lblSorties);
 
-		listSorties = new JList<String>();
-		listModelSorties = new DefaultListModel<String>();
+		listSorties = new JList<Sortie>();
+		listModelSorties = new DefaultListModel<Sortie>();
 
 		for (Sortie s : Main.sortieIndex) {
-			listModelSorties.addElement(s.sortieNumber);
+			listModelSorties.addElement(s);
 		}
 
 		listSorties.setModel(listModelSorties);
@@ -145,7 +144,6 @@ public class GUITelescope {
 				@SuppressWarnings("rawtypes")
 				JList list = (JList) evt.getSource();
 				if (evt.getClickCount() >= 2) {
-					@SuppressWarnings("unused")
 					int index = list.locationToIndex(evt.getPoint());
 					// viewSortie(index);
 					Sortie s = Main.sortieIndex.get(index);
@@ -213,7 +211,7 @@ public class GUITelescope {
 		listModelSorties.clear();
 
 		for (Sortie s : Main.sortieIndex) {
-			listModelSorties.addElement(s.sortieNumber);
+			listModelSorties.addElement(s);
 		}
 
 		listSorties.setModel(listModelSorties);
@@ -223,8 +221,7 @@ public class GUITelescope {
 		listModelPeople.clear();
 
 		for (Person p : Main.personIndex) {
-			listModelPeople.addElement(p.rank + " " + p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + " - "
-					+ p.crewPos + " [" + p.shop + "] [" + p.flight + "]");
+			listModelPeople.addElement(p);
 		}
 
 		listPeople.setModel(listModelPeople);

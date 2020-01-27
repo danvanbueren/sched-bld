@@ -60,5 +60,10 @@ public class Person {
 		}
 
 	}
+	
+	@Override
+	public String toString() {
+		return rank + " " + nameLast + ", " + nameFirst + " " + nameMiddle + " [" + crewPos + "] [" + shop + "] [" + flight + "]";
+	}
 
 }

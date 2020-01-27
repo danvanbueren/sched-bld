@@ -50,5 +50,10 @@ public class Sortie {
 		this.endDate = endDate;
 		// this.loadList = loadList;
 	}
-
+	
+	@Override
+	public String toString() {
+		return sortieNumber;
+	}
+	
 }

@@ -2,9 +2,12 @@ package projDemo;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -28,8 +31,8 @@ public class GUISortie {
 	DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
 
-	DefaultListModel<String> modelRoster, modelLoadlist;
-	JList<String> listRoster, listLoadlist;
+	DefaultListModel<Person> modelRoster, modelLoadlist;
+	JList<Person> listRoster, listLoadlist;
 
 	JLabel lblLoadlist, lblFilter, lblSortieType, lblSquadron, lblEndDate, lblStartDate, lblSame;
 	JComboBox<String> comboSortieType, comboSquadron;
@@ -107,8 +110,8 @@ public class GUISortie {
 		/*
 		 * Roster List
 		 */
-		modelRoster = new DefaultListModel<String>();
-		listRoster = new JList<String>();
+		modelRoster = new DefaultListModel<Person>();
+		listRoster = new JList<Person>();
 		listRoster.setModel(modelRoster);
 		listRoster.setBounds(260, 40, 234, 392);
 		getFrame().getContentPane().add(listRoster);
@@ -120,8 +123,8 @@ public class GUISortie {
 		lblLoadlist.setBounds(6, 198, 151, 25);
 		getFrame().getContentPane().add(lblLoadlist);
 
-		modelLoadlist = new DefaultListModel<String>();
-		listLoadlist = new JList<String>();
+		modelLoadlist = new DefaultListModel<Person>();
+		listLoadlist = new JList<Person>();
 		listLoadlist.setModel(modelLoadlist);
 		listLoadlist.setBounds(6, 223, 244, 249);
 		getFrame().getContentPane().add(listLoadlist);
@@ -251,9 +254,16 @@ public class GUISortie {
 					ObjectFunctions.systemCreateSortie(txtStartDate.getText(), txtEndDate.getText(),
 							comboSquadron.getSelectedItem().toString(), comboSortieType.getSelectedItem().toString());
 				} else {
-					s.startDate = DataConvert.fromStringToLocalDate(txtStartDate.getText());
-					s.endDate = DataConvert.fromStringToLocalDate(txtEndDate.getText());
-					s.sortieNumber = DataConvert.toSortieNumber(s.startDate, comboSquadron.getSelectedItem().toString(), comboSortieType.getSelectedItem().toString());
+					ArrayList<Person> tempLoadList = new ArrayList<>();
+					
+					for(int i = 0; i < modelLoadlist.getSize(); i++) {
+						tempLoadList.add(modelLoadlist.elementAt(i));
+						System.out.println("i: " + i + ". " + modelLoadlist.elementAt(i));
+					}
+					
+					s = ObjectFunctions.systemEditSortie(s, tempLoadList, txtStartDate.getText(),
+							txtEndDate.getText(), comboSquadron.getSelectedItem().toString(),
+							comboSortieType.getSelectedItem().toString());
 					/*
 					 * NEED TO ADD LOADLIST!!!
 					 */
@@ -263,6 +273,41 @@ public class GUISortie {
 				frame.dispose();
 			}
 		});
+
+		listRoster.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				@SuppressWarnings("rawtypes")
+				JList list = (JList) evt.getSource();
+				if (evt.getClickCount() >= 2) {
+					int index = list.locationToIndex(evt.getPoint());
+					if (index != -1) {
+						Person p = modelRoster.elementAt(index);
+
+						// CHANGE STATE TO LOADLIST
+						modelRoster.removeElement(p);
+						modelLoadlist.addElement(p);
+					}
+				}
+			}
+		});
+
+		listLoadlist.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				@SuppressWarnings("rawtypes")
+				JList list = (JList) evt.getSource();
+				if (evt.getClickCount() >= 2) {
+					int index = list.locationToIndex(evt.getPoint());
+					if (index != -1) {
+						Person p = modelLoadlist.elementAt(index);
+
+						// CHANGE STATE TO LOADLIST
+						modelLoadlist.removeElement(p);
+						modelRoster.addElement(p);
+					}
+
+				}
+			}
+		});
 	}
 
 	public void refreshLists() {
@@ -270,14 +315,12 @@ public class GUISortie {
 		modelRoster.clear();
 
 		for (Person p : Main.personIndex) {
-			modelRoster.addElement(
-					p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + ", " + p.rank + " - " + p.crewPos);
+			modelRoster.addElement(p);
 			System.out.println(p.nameFirst);
 		}
 
 		for (Person p : s.loadList) {
-			modelLoadlist.addElement(
-					p.nameLast + ", " + p.nameFirst + " " + p.nameMiddle + ", " + p.rank + " - " + p.crewPos);
+			modelLoadlist.addElement(p);
 			System.out.println(p.nameFirst);
 		}
 
