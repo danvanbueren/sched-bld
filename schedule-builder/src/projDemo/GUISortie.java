@@ -314,19 +314,18 @@ public class GUISortie {
 		modelLoadlist.clear();
 		modelRoster.clear();
 
-		for (Person p : Main.personIndex) {
-			modelRoster.addElement(p);
-			System.out.println(p.nameFirst);
-		}
-
 		for (Person p : s.loadList) {
 			modelLoadlist.addElement(p);
-			System.out.println(p.nameFirst);
+		}
+		
+		for (Person p : Main.personIndex) {
+			if(!modelLoadlist.contains(p)) {
+				modelRoster.addElement(p);
+			}
 		}
 
 		listLoadlist.setModel(modelLoadlist);
 		listRoster.setModel(modelRoster);
-		System.out.println("refresh list");
 	}
 
 	public JFrame getFrame() {

@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class GUITelescope {
 
@@ -55,6 +57,8 @@ public class GUITelescope {
 		JLabel lblSorties = new JLabel("Sorties");
 		JButton btnSorties = new JButton("Add Sortie");
 		JPanel panelCalendar = new JPanel();
+		JPanel panelSort = new JPanel();
+		JButton btnSortFilter = new JButton("Sort/Filter");
 		JScrollPane scrollPaneSettings = new JScrollPane();
 		JLabel lblNewLabel = new JLabel("Preferred Squadron");
 		JComboBox<String> comboBox = new JComboBox<String>();
@@ -64,6 +68,7 @@ public class GUITelescope {
 
 		tabbedPaneMain.addTab("Admin", null, panelAdmin, null);
 		tabbedPaneMain.addTab("Calendar", null, panelCalendar, null);
+		tabbedPaneMain.addTab("Sort & Filter", null, panelSort, null);
 		tabbedPaneMain.addTab("Settings", null, scrollPaneSettings, null);
 
 		panelAdmin.setLayout(null);
@@ -100,6 +105,18 @@ public class GUITelescope {
 		lblSorties.setBounds(0, 0, 343, 20);
 		panelSorties.add(lblSorties);
 
+		tabbedPaneMain.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				if (tabbedPaneMain.getSelectedComponent().equals(tabbedPaneMain.getComponent(2))) {
+
+					// refresh lookback
+					ObjectFunctions.refreshLookbackValues();
+				}
+
+			}
+		});
+		
+
 		listSorties = new JList<Sortie>();
 		listModelSorties = new DefaultListModel<Sortie>();
 
@@ -115,6 +132,9 @@ public class GUITelescope {
 
 		btnSorties.setBounds(0, 380, 343, 20);
 		panelSorties.add(btnSorties);
+
+		btnSortFilter.setBounds(0, 380, 343, 20);
+		panelSort.add(btnSortFilter);
 
 		scrollPaneSettings.setRowHeaderView(lblNewLabel);
 

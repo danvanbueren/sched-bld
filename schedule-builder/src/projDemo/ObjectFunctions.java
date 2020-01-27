@@ -147,4 +147,39 @@ public class ObjectFunctions {
 		return s;
 	}
 
+	public static void sortAndFilter() {
+
+	}
+
+	public static void refreshLookbackValues() {
+		System.out.println("Refreshing lookback...");
+		for (Sortie s : Main.sortieIndex) {
+			for (Person p : s.loadList) {
+				p.sortiesAllTime.add(s.startDate);
+			}
+		}
+
+		LocalDate oneMonthLookbackRegion[] = new LocalDate[2];
+		oneMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusMonths(1);
+		oneMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusDays(1);
+		System.out.println("\n1mo] "+oneMonthLookbackRegion[0] + " - " + oneMonthLookbackRegion[1]);
+		
+		LocalDate threeMonthLookbackRegion[] = new LocalDate[2];
+		threeMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusMonths(3);
+		threeMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusDays(1);
+		System.out.println("3mo] "+threeMonthLookbackRegion[0] + " - " + threeMonthLookbackRegion[1]+"\n");
+
+		for (Person p : Main.personIndex) {
+			for (LocalDate ld : p.sortiesAllTime) {
+				if (ld.isAfter(oneMonthLookbackRegion[0].minusDays(1)) && ld.isBefore(oneMonthLookbackRegion[1].plusDays(1)))
+					p.lookbackOne++;
+				if (ld.isAfter(threeMonthLookbackRegion[0].minusDays(1)) && ld.isBefore(threeMonthLookbackRegion[1].plusDays(1)))
+					p.lookbackThree++;
+			}
+		}
+		for (Person p : Main.personIndex) {
+			System.out.println(p + " - lb1: " + p.lookbackOne + " lb3: " + p.lookbackThree);
+		}
+
+	}
 }

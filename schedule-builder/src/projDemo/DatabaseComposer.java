@@ -1,4 +1,5 @@
 package projDemo;
+
 import java.util.ArrayList;
 
 public class DatabaseComposer {
@@ -7,11 +8,7 @@ public class DatabaseComposer {
 
 		String outputBuffer = "";
 
-		System.out.println("");
-
 		for (Sortie s : Main.sortieIndex) {
-			System.out.println("Saving " + s.sortieNumber + " (_" + s.loadList.size() + "_attached_obj)");
-
 			String uuid = s.uuid.toString();
 			String sortieNumber = s.sortieNumber;
 			String startDate = s.startDate.toString();
@@ -32,8 +29,6 @@ public class DatabaseComposer {
 		}
 
 		for (Person p : Main.personIndex) {
-			System.out.println("Saving " + p.nameLast);
-
 			String uuid = p.uuid.toString();
 			String rank = p.rank;
 			String nameFirst = p.nameFirst;
@@ -53,20 +48,33 @@ public class DatabaseComposer {
 
 		}
 
-		ReadWriteIO.write(outputBuffer);
+		ReadWriteIO.write("db.txt", outputBuffer);
+
+		outputBuffer = "";
+
+		for (Person p : Main.personIndex) {
+			outputBuffer += "#" + p.uuid;
+			for (Appointment a : p.calendar) {
+				outputBuffer += "*" + a.startDate + "~" + a.endDate + "~" + a.isFlyable + "~" + a.description;
+			}
+			outputBuffer += System.getProperty("line.separator");
+		}
+
+		ReadWriteIO.write("db_.txt", outputBuffer);
+
 	}
 
 	public static void load() {
 
-		String inputBufferSingle = ReadWriteIO.read();
+		String inputBufferSingle = ReadWriteIO.read("db.txt");
 
 		if (inputBufferSingle.isBlank()) {
 			try {
-				ReadWriteIO.write("waiting to save...");
+				ReadWriteIO.write("db.txt", "x");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		} else {
 
 			String[] inputBuffer = inputBufferSingle.replace(System.getProperty("line.separator"), "~").split("\\~");

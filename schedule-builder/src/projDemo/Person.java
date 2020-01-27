@@ -1,4 +1,5 @@
 package projDemo;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -8,6 +9,8 @@ public class Person {
 
 	String rank, nameFirst, nameMiddle, nameLast, crewPos, shop, flight, phoneNumber, address, social;
 	ArrayList<Appointment> calendar = new ArrayList<>();
+	ArrayList<LocalDate> sortiesAllTime = new ArrayList<>();
+	int lookbackOne, lookbackThree;
 
 	public Person(String rank, String nameFirst, String nameMiddle, String nameLast, String crewPos, String shop,
 			String flight, String phoneNumber, String address, String social) {

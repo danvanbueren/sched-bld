@@ -53,7 +53,7 @@ public class Sortie {
 	
 	@Override
 	public String toString() {
-		return sortieNumber;
+		return sortieNumber + " [" + startDate.getYear() + "]";
 	}
 	
 }
