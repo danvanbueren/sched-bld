@@ -70,7 +70,7 @@ public class DatabaseComposer {
 
 		if (inputBufferSingle.isBlank()) {
 			try {
-				ReadWriteIO.write("db.txt", "x");
+				ReadWriteIO.write("db.txt", "");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -135,7 +135,7 @@ public class DatabaseComposer {
 
 		if (inputBufferSingle.isBlank()) {
 			try {
-				ReadWriteIO.write("db_.txt", "x");
+				ReadWriteIO.write("db_.txt", "");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

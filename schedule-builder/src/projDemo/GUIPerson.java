@@ -22,6 +22,8 @@ public class GUIPerson {
 	private JFrame frame;
 	private JTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
 	boolean createNew;
+	
+	private LookbackMeter meter;
 
 	JButton btnAddAppointment;
 
@@ -270,6 +272,10 @@ public class GUIPerson {
 
 			}
 		});
+		
+		getFrame().setBounds(100, 100, 650, 500);
+		meter = new LookbackMeter(500, 50, 140, 25);
+		getFrame().getContentPane().add(meter.getPanel());
 	}
 
 	public void refreshList() {
