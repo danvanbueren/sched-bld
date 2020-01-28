@@ -3,6 +3,8 @@ package projDemo;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.UUID;
 
 import javax.swing.DefaultListModel;
@@ -10,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 public class GUIPerson {
@@ -19,9 +22,12 @@ public class GUIPerson {
 	private JFrame frame;
 	private JTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
 	boolean createNew;
-	JList<String> list;
+
 	JButton btnAddAppointment;
-	DefaultListModel<String> listModel;
+
+	JList<Appointment> list;
+	DefaultListModel<Appointment> listModel;
+	JScrollPane scroll;
 
 	JButton btnDelete;
 
@@ -62,11 +68,17 @@ public class GUIPerson {
 		getFrame().getContentPane().setLayout(null);
 		getFrame().setResizable(false);
 
-		list = new JList<String>();
-		listModel = new DefaultListModel<String>();
+		list = new JList<Appointment>();
+		listModel = new DefaultListModel<Appointment>();
 		list.setModel(listModel);
 		list.setBounds(260, 26, 234, 406);
-		getFrame().getContentPane().add(list);
+		
+		scroll = new JScrollPane(list);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setBounds(260, 26, 234, 406);
+		
+		getFrame().getContentPane().add(scroll);
 		list.setEnabled(false);
 
 		txtNmM = new JTextField();
@@ -197,6 +209,28 @@ public class GUIPerson {
 
 			}
 		});
+		
+		// Open SortieGUI in edit state
+		list.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				@SuppressWarnings("rawtypes")
+				JList list = (JList) evt.getSource();
+				if (evt.getClickCount() >= 2) {
+					int index = list.locationToIndex(evt.getPoint());
+					Appointment a = p.calendar.get(index);
+					EventQueue.invokeLater(new Runnable() {
+						public void run() {
+							try {
+								GUIAppointment window = new GUIAppointment(p, windowSignature, a);
+								window.getFrame().setVisible(true);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
+				}
+			}
+		});
 	}
 
 	private void initializeExisting(Person p) {
@@ -241,12 +275,10 @@ public class GUIPerson {
 	public void refreshList() {
 		listModel.clear();
 		for (Appointment a : p.calendar) {
-			listModel.addElement(a.startDate + " - " + a.description);
-			System.out.println(a.description);
+			listModel.addElement(a);
 		}
 
 		list.setModel(listModel);
-		System.out.println("refresh list");
 	}
 
 	public JFrame getFrame() {

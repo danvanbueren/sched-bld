@@ -23,20 +23,88 @@ import javax.swing.event.DocumentListener;
 public class GUIAppointment {
 
 	private JFrame frame;
-	private JFormattedTextField ftfDescription;
+
+	JFormattedTextField txtStartDate, txtEndDate;
+	JComboBox<String> comboBox;
+	JFormattedTextField ftfDescription;
+	JCheckBox chckSameDate;
+	JButton btnDelete, btnSubmit;
+	JPanel panel;
+	
+	Person p;
+	Appointment a;
+	UUID windowSignature;
+
+	boolean createNew;
+
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
 
 	public GUIAppointment(Person p, UUID windowSignature) {
 		initialize(p, windowSignature);
 	}
 
+	public GUIAppointment(Person p, UUID windowSignature, Appointment a) {
+		initialize(p, windowSignature);
+		initializeExisting(a);
+	}
+
+	private void initializeExisting(Appointment a) {
+
+		createNew = false;
+		this.a = a;
+		getFrame().setTitle("Telescope - Appointment (Edit)");
+
+		ftfDescription.setText(a.description);
+
+		if (a.isFlyable) {
+			comboBox.setSelectedItem("Yes");
+		} else {
+			comboBox.setSelectedItem("No");
+		}
+
+		txtStartDate.setText(a.startDate.format(formatter));
+		txtEndDate.setText(a.endDate.format(formatter));
+
+		if (!a.startDate.isEqual(a.endDate)) {
+			chckSameDate.setSelected(false);
+			txtEndDate.setEnabled(true);
+		}
+
+		// create delete button, change submit behavior
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setBounds(6, 226, 200, 40);
+		panel.add(btnDelete);
+
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				p.calendar.remove(a);
+
+				for (GUIPerson window : GUITelescope.personWindowSignatures) {
+					if (window.windowSignature.equals(windowSignature)) {
+						window.refreshList();
+					}
+				}
+
+				frame.setVisible(false);
+				frame.dispose();
+			}
+		});
+	}
+
 	private void initialize(Person p, UUID windowSignature) {
+
+		this.p = p;
+		this.windowSignature = windowSignature;
+
+		createNew = true;
+
 		setFrame(new JFrame());
-		getFrame().setTitle("Telescope - Appointment - (Add/Edit)");
+		getFrame().setTitle("Telescope - Appointment (Add)");
 		getFrame().setBounds(100, 100, 450, 300);
 		getFrame().getContentPane().setLayout(null);
 		getFrame().setResizable(false);
 
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		panel.setBounds(0, 0, 450, 278);
 		getFrame().getContentPane().add(panel);
 		panel.setLayout(null);
@@ -62,7 +130,7 @@ public class GUIAppointment {
 		ftfDescription.setBounds(6, 146, 200, 20);
 		panel.add(ftfDescription);
 
-		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox = new JComboBox<String>();
 		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] { "Yes", "No" }));
 		comboBox.setBounds(6, 106, 200, 20);
 		comboBox.setSelectedItem("No");
@@ -73,12 +141,12 @@ public class GUIAppointment {
 		 */
 		DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
 
-		JFormattedTextField txtEndDate = new JFormattedTextField(df);
+		txtEndDate = new JFormattedTextField(df);
 		txtEndDate.setColumns(10);
 		txtEndDate.setBounds(6, 66, 200, 20);
 		panel.add(txtEndDate);
 
-		JFormattedTextField txtStartDate = new JFormattedTextField(df);
+		txtStartDate = new JFormattedTextField(df);
 
 		txtStartDate.setColumns(10);
 		txtStartDate.setBounds(6, 26, 200, 20);
@@ -92,7 +160,7 @@ public class GUIAppointment {
 		lblSame.setBounds(76, 45, 100, 25);
 		panel.add(lblSame);
 
-		JCheckBox chckSameDate = new JCheckBox("");
+		chckSameDate = new JCheckBox("");
 		chckSameDate.setSelected(true);
 		txtEndDate.setEnabled(false);
 
@@ -139,46 +207,35 @@ public class GUIAppointment {
 
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (true) {
-
-					LocalDate startDate, endDate;
-					boolean isFlyable = false;
-					String description;
-
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
-
-					startDate = LocalDate.parse(txtStartDate.getText(), formatter);
-					endDate = LocalDate.parse(txtEndDate.getText(), formatter);
-
-					switch (comboBox.getSelectedItem().toString()) {
-					case "Yes":
-						isFlyable = true;
-						break;
-					case "No":
-						isFlyable = false;
-						break;
-					default:
-						System.err.println("Error.");
-					}
-
-					description = ftfDescription.getText();
-
+				LocalDate startDate = LocalDate.parse(txtStartDate.getText(), formatter);;
+				LocalDate endDate = LocalDate.parse(txtEndDate.getText(), formatter);;
+				boolean isFlyable = false;
+				String description = ftfDescription.getText();
+				
+				if(comboBox.getSelectedItem().toString().contentEquals("Yes")) 
+					isFlyable = true;
+				
+				if (createNew) {
 					p.calendar.add(new Appointment(startDate, endDate, isFlyable, description));
-
-					for (GUIPerson window : GUITelescope.personWindowSignatures) {
-
-						if (window.windowSignature.equals(windowSignature)) {
-							window.refreshList();
-						}
-
-					}
-
-					frame.setVisible(false);
-					frame.dispose();
+					
+				} else {
+					a.startDate = startDate;
+					a.endDate = endDate;
+					a.isFlyable = isFlyable;
+					a.description = description;
 				}
+				
+				for (GUIPerson window : GUITelescope.personWindowSignatures) {
+					if (window.windowSignature.equals(windowSignature))
+						window.refreshList();
+				}
+				
+				frame.setVisible(false);
+				frame.dispose();
 
 			}
 		});
+
 	}
 
 	public JFrame getFrame() {

@@ -15,4 +15,13 @@ public class Appointment {
 		this.description = description;
 
 	}
+	
+	@Override
+	public String toString() {
+		if(isFlyable) {
+			return "[" + startDate + " - " + endDate + "] FLY: " + description;
+		} else {
+			return "[" + startDate + " - " + endDate + "] NOFLY: " + description;
+		}
+	}
 }

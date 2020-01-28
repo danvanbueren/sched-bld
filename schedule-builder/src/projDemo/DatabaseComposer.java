@@ -1,5 +1,6 @@
 package projDemo;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DatabaseComposer {
@@ -53,11 +54,10 @@ public class DatabaseComposer {
 		outputBuffer = "";
 
 		for (Person p : Main.personIndex) {
-			outputBuffer += "#" + p.uuid;
 			for (Appointment a : p.calendar) {
-				outputBuffer += "*" + a.startDate + "~" + a.endDate + "~" + a.isFlyable + "~" + a.description;
+				outputBuffer += p.uuid + "~" + a.startDate + "~" + a.endDate + "~" + a.isFlyable + "~" + a.description
+						+ System.getProperty("line.separator");
 			}
-			outputBuffer += System.getProperty("line.separator");
 		}
 
 		ReadWriteIO.write("db_.txt", outputBuffer);
@@ -99,10 +99,8 @@ public class DatabaseComposer {
 					String calendarString = inputBuffer[currentLine + 12];
 					ArrayList<Appointment> calendar = new ArrayList<>();
 
-					Person loadP = new Person(DataConvert.fromStringToUUID(uuid), calendar, rank, nameFirst, nameMiddle,
-							nameLast, crewPos, shop, flight, phoneNumber, address, social);
-
-					System.out.println("Person loaded: " + loadP.nameLast);
+					new Person(DataConvert.fromStringToUUID(uuid), calendar, rank, nameFirst, nameMiddle, nameLast,
+							crewPos, shop, flight, phoneNumber, address, social);
 				}
 
 				if (s.contentEquals("%")) {
@@ -114,11 +112,9 @@ public class DatabaseComposer {
 
 					String[] loadListBuffer = sortieLoadList.split("\\#");
 
-					Sortie loadS = new Sortie(DataConvert.fromStringToUUID(uuid), sortieNumber,
+					new Sortie(DataConvert.fromStringToUUID(uuid), sortieNumber,
 							DataConvert.fromStringToLocalDate(startDate), DataConvert.fromStringToLocalDate(endDate),
 							loadListBuffer);
-
-					System.out.println("Sortie loaded: " + loadS.sortieNumber);
 				}
 
 				currentLine++;
@@ -130,6 +126,44 @@ public class DatabaseComposer {
 						if (st.contentEquals(p.uuid.toString())) {
 							s.loadList.add(p);
 						}
+					}
+				}
+			}
+		}
+
+		inputBufferSingle = ReadWriteIO.read("db_.txt");
+
+		if (inputBufferSingle.isBlank()) {
+			try {
+				ReadWriteIO.write("db_.txt", "x");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		} else {
+			String[] inputBuffer = inputBufferSingle.split(System.getProperty("line.separator"));
+
+			for (String s : inputBuffer) {
+				String[] aptBuffer = s.split("\\~");
+
+				boolean tempFlyable = false;
+
+				if (aptBuffer[3].contentEquals("true"))
+					tempFlyable = true;
+
+				String tempDesc;
+
+				try {
+					tempDesc = aptBuffer[4];
+				} catch (Exception e) {
+					tempDesc = "Generic";
+				}
+
+				for (Person p : Main.personIndex) {
+					if (p.uuid.equals(DataConvert.fromStringToUUID(aptBuffer[0]))) {
+						Appointment a = new Appointment(LocalDate.parse(aptBuffer[1]), LocalDate.parse(aptBuffer[2]),
+								tempFlyable, tempDesc);
+						p.calendar.add(a);
 					}
 				}
 			}
