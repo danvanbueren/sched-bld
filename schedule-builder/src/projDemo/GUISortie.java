@@ -258,7 +258,6 @@ public class GUISortie {
 					
 					for(int i = 0; i < modelLoadlist.getSize(); i++) {
 						tempLoadList.add(modelLoadlist.elementAt(i));
-						System.out.println("i: " + i + ". " + modelLoadlist.elementAt(i));
 					}
 					
 					s = ObjectFunctions.systemEditSortie(s, tempLoadList, txtStartDate.getText(),

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import projDemo.LookbackMeter.Month;
+
 public class ObjectFunctions {
 
 	public static void systemCreateAppointment(Person p) {
@@ -151,35 +153,97 @@ public class ObjectFunctions {
 
 	}
 
-	public static void refreshLookbackValues() {
-		System.out.println("Refreshing lookback...");
+	public static boolean getLookbackStatus(Person p, LookbackMeter.Month type) {
+		p.sortiesAllTime.clear();
+		p.lookbackOne = 0;
+		p.lookbackThree = 0;
+
 		for (Sortie s : Main.sortieIndex) {
-			for (Person p : s.loadList) {
-				p.sortiesAllTime.add(s.startDate);
+			for (Person p1 : s.loadList) {
+				if (p.equals(p1))
+					p.sortiesAllTime.add(s);
 			}
 		}
 
-		LocalDate oneMonthLookbackRegion[] = new LocalDate[2];
-		oneMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusMonths(1);
-		oneMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusDays(1);
-		System.out.println("\n1mo] "+oneMonthLookbackRegion[0] + " - " + oneMonthLookbackRegion[1]);
-		
-		LocalDate threeMonthLookbackRegion[] = new LocalDate[2];
-		threeMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusMonths(3);
-		threeMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01).minusDays(1);
-		System.out.println("3mo] "+threeMonthLookbackRegion[0] + " - " + threeMonthLookbackRegion[1]+"\n");
+		if (type.equals(LookbackMeter.Month.ONE_MONTH)) {
 
-		for (Person p : Main.personIndex) {
-			for (LocalDate ld : p.sortiesAllTime) {
-				if (ld.isAfter(oneMonthLookbackRegion[0].minusDays(1)) && ld.isBefore(oneMonthLookbackRegion[1].plusDays(1)))
+			LocalDate oneMonthLookbackRegion[] = new LocalDate[2];
+			oneMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusMonths(1);
+			oneMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusDays(1);
+
+			for (Sortie s : p.sortiesAllTime) {
+				if (s.startDate.isAfter(oneMonthLookbackRegion[0].minusDays(1))
+						&& s.startDate.isBefore(oneMonthLookbackRegion[1].plusDays(1)))
 					p.lookbackOne++;
-				if (ld.isAfter(threeMonthLookbackRegion[0].minusDays(1)) && ld.isBefore(threeMonthLookbackRegion[1].plusDays(1)))
+			}
+			
+			if(p.lookbackOne >= 2) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} else if (type.equals(LookbackMeter.Month.THREE_MONTH)) {
+
+			LocalDate threeMonthLookbackRegion[] = new LocalDate[2];
+			threeMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusMonths(3);
+			threeMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusDays(1);
+
+			for (Sortie s : p.sortiesAllTime) {
+				if (s.startDate.isAfter(threeMonthLookbackRegion[0].minusDays(1))
+						&& s.startDate.isBefore(threeMonthLookbackRegion[1].plusDays(1)))
 					p.lookbackThree++;
 			}
-		}
-		for (Person p : Main.personIndex) {
-			System.out.println(p + " - lb1: " + p.lookbackOne + " lb3: " + p.lookbackThree);
+			
+			if(p.lookbackThree >= 6) {
+				return true;
+			} else {
+				return false;
+			}
+
 		}
 
+		
+		return false;
+	}
+
+	public static String getTooltipForMeter(Person p, Month type) {
+		String sorties = "<html>";
+		
+		if(type.equals(Month.ONE_MONTH)) {
+			LocalDate oneMonthLookbackRegion[] = new LocalDate[2];
+			oneMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusMonths(1);
+			oneMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusDays(1);
+			
+			for (Sortie s : p.sortiesAllTime) {
+				if (s.startDate.isAfter(oneMonthLookbackRegion[0].minusDays(1))
+						&& s.startDate.isBefore(oneMonthLookbackRegion[1].plusDays(1)))
+					sorties += s.sortieNumber + "<br>";
+			}
+		}
+		
+		if(type.equals(Month.THREE_MONTH)) {
+			LocalDate threeMonthLookbackRegion[] = new LocalDate[2];
+			threeMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusMonths(3);
+			threeMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
+					.minusDays(1);
+			
+			for (Sortie s : p.sortiesAllTime) {
+				if (s.startDate.isAfter(threeMonthLookbackRegion[0].minusDays(1))
+						&& s.startDate.isBefore(threeMonthLookbackRegion[1].plusDays(1)))
+					sorties += s.sortieNumber + "<br>";
+			}
+		}
+		
+		sorties += "</html>";
+		
+		return sorties;
 	}
 }

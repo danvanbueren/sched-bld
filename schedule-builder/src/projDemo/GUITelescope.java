@@ -58,6 +58,7 @@ public class GUITelescope {
 		JButton btnSorties = new JButton("Add Sortie");
 		JPanel panelCalendar = new JPanel();
 		JPanel panelSort = new JPanel();
+		JPanel panelReports = new JPanel();
 		JButton btnSortFilter = new JButton("Sort/Filter");
 		JScrollPane scrollPaneSettings = new JScrollPane();
 		JLabel lblNewLabel = new JLabel("Preferred Squadron");
@@ -69,6 +70,7 @@ public class GUITelescope {
 		tabbedPaneMain.addTab("Admin", null, panelAdmin, null);
 		tabbedPaneMain.addTab("Calendar", null, panelCalendar, null);
 		tabbedPaneMain.addTab("Sort & Filter", null, panelSort, null);
+		tabbedPaneMain.addTab("Reports", null, panelReports, null);
 		tabbedPaneMain.addTab("Settings", null, scrollPaneSettings, null);
 
 		panelAdmin.setLayout(null);
@@ -110,7 +112,7 @@ public class GUITelescope {
 				if (tabbedPaneMain.getSelectedComponent().equals(tabbedPaneMain.getComponent(2))) {
 
 					// refresh lookback
-					ObjectFunctions.refreshLookbackValues();
+					// ObjectFunctions.refreshLookbackValues();
 				}
 
 			}

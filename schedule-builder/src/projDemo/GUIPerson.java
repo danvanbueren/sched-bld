@@ -1,6 +1,7 @@
 package projDemo;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -15,6 +16,8 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import projDemo.LookbackMeter.Month;
+
 public class GUIPerson {
 
 	public UUID windowSignature;
@@ -22,7 +25,7 @@ public class GUIPerson {
 	private JFrame frame;
 	private JTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
 	boolean createNew;
-	
+
 	private LookbackMeter meter;
 
 	JButton btnAddAppointment;
@@ -74,12 +77,12 @@ public class GUIPerson {
 		listModel = new DefaultListModel<Appointment>();
 		list.setModel(listModel);
 		list.setBounds(260, 26, 234, 406);
-		
+
 		scroll = new JScrollPane(list);
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBounds(260, 26, 234, 406);
-		
+
 		getFrame().getContentPane().add(scroll);
 		list.setEnabled(false);
 
@@ -211,7 +214,7 @@ public class GUIPerson {
 
 			}
 		});
-		
+
 		// Open SortieGUI in edit state
 		list.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
@@ -274,8 +277,36 @@ public class GUIPerson {
 		});
 		
 		getFrame().setBounds(100, 100, 650, 500);
+		
+		JLabel lblStatus = new JLabel("Status");
+		lblStatus.setBounds(500, 5, 140, 25);
+		lblStatus.setFont(new Font(null, 1, 20));
+		getFrame().getContentPane().add(lblStatus);
+		
+		JLabel lblLookback = new JLabel("Lookback");
+		lblLookback.setBounds(500, 30, 140, 25);
+		getFrame().getContentPane().add(lblLookback);
+		
 		meter = new LookbackMeter(500, 50, 140, 25);
 		getFrame().getContentPane().add(meter.getPanel());
+		
+		if(ObjectFunctions.getLookbackStatus(p, Month.ONE_MONTH)) {
+			meter.setState(LookbackMeter.State.PASS, Month.ONE_MONTH);
+		} else {
+			meter.setState(LookbackMeter.State.FAIL, Month.ONE_MONTH);
+		}
+		
+		meter.setLabelNumber(p.lookbackOne, Month.ONE_MONTH);
+		meter.setPanelTooltip(ObjectFunctions.getTooltipForMeter(p, Month.ONE_MONTH), Month.ONE_MONTH);
+		
+		if(ObjectFunctions.getLookbackStatus(p, Month.THREE_MONTH)) {
+			meter.setState(LookbackMeter.State.PASS, Month.THREE_MONTH);
+		} else {
+			meter.setState(LookbackMeter.State.FAIL, Month.THREE_MONTH);
+		}
+		
+		meter.setLabelNumber(p.lookbackThree, Month.THREE_MONTH);
+		meter.setPanelTooltip(ObjectFunctions.getTooltipForMeter(p, Month.THREE_MONTH), Month.THREE_MONTH);
 	}
 
 	public void refreshList() {

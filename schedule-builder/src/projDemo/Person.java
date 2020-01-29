@@ -1,5 +1,5 @@
 package projDemo;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -9,7 +9,7 @@ public class Person {
 
 	String rank, nameFirst, nameMiddle, nameLast, crewPos, shop, flight, phoneNumber, address, social;
 	ArrayList<Appointment> calendar = new ArrayList<>();
-	ArrayList<LocalDate> sortiesAllTime = new ArrayList<>();
+	ArrayList<Sortie> sortiesAllTime = new ArrayList<>();
 	int lookbackOne, lookbackThree;
 
 	public Person(String rank, String nameFirst, String nameMiddle, String nameLast, String crewPos, String shop,
@@ -38,7 +38,7 @@ public class Person {
 
 		for (Person per : Main.personIndex) {
 			if (uuid.equals(per.uuid)) {
-				System.out.println("Tried creating an object with the same UUID as another object!");
+				System.err.println("Tried creating an object with the same UUID as another object!");
 				good = false;
 			}
 		}
@@ -63,10 +63,11 @@ public class Person {
 		}
 
 	}
-	
+
 	@Override
 	public String toString() {
-		return rank + " " + nameLast + ", " + nameFirst + " " + nameMiddle + " [" + crewPos + "] [" + shop + "] [" + flight + "]";
+		return rank + " " + nameLast + ", " + nameFirst + " " + nameMiddle + " [" + crewPos + "] [" + shop + "] ["
+				+ flight + "]";
 	}
 
 }

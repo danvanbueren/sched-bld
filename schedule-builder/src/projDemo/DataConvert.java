@@ -39,7 +39,6 @@ public class DataConvert {
 	}
 
 	public static String toSortieNumber(LocalDate ld, String squadron, String type) {
-		System.out.println();
 
 		String tkMonth = "";
 
@@ -81,7 +80,7 @@ public class DataConvert {
 			tkMonth = "L";
 			break;
 		default:
-			System.out.println("Something went wrong when setting month.");
+			System.err.println("Something went wrong when setting month.");
 			break;
 		}
 

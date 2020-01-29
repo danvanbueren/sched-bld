@@ -37,7 +37,7 @@ import javax.swing.border.LineBorder;
  * containing a {@link JPanel} that reflects the necessary objects 
  * to visualize the information to which it represents.
  *
- * @version 28 Jan 2020
+ * @version 29 Jan 2020
  * @author Daniel Van Bueren
  * @see JPanel
  */
@@ -54,7 +54,7 @@ public class LookbackMeter {
 	private JPanel backboard, pnlOneMonth, pnlThreeMonth;
 	private JLabel lblOneMonth, lblThreeMonth;
 
-	private int x, y, width, height;
+	private int x, y, width, height, oneMonthNumber, threeMonthNumber;
 
 	enum Month {
 		ONE_MONTH, THREE_MONTH;
@@ -66,6 +66,9 @@ public class LookbackMeter {
 
 	public LookbackMeter() {
 
+		oneMonthNumber = 0;
+		threeMonthNumber = 0;
+		
 		x = 6;
 		y = 6;
 		width = 100;
@@ -103,6 +106,9 @@ public class LookbackMeter {
 	
 	public LookbackMeter(int x, int y) {
 
+		oneMonthNumber = 0;
+		threeMonthNumber = 0;
+		
 		this.x = x;
 		this.y = y;
 		width = 100;
@@ -140,6 +146,9 @@ public class LookbackMeter {
 	
 	public LookbackMeter(int x, int y, int width, int height) {
 
+		oneMonthNumber = 0;
+		threeMonthNumber = 0;
+		
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -192,6 +201,28 @@ public class LookbackMeter {
 		setPosition(x, y);
 	}
 
+	public void setLabelNumber(int i, Month m) {
+		
+		if(m.equals(Month.ONE_MONTH)) {
+			oneMonthNumber = i;
+		}
+		if(m.equals(Month.THREE_MONTH)) {
+			threeMonthNumber = i;
+		}
+		
+		refreshAlignment();
+		
+	}
+	
+	public void setPanelTooltip(String s, Month m) {
+		if(m.equals(Month.ONE_MONTH)) {
+			pnlOneMonth.setToolTipText(s);
+		}
+		if(m.equals(Month.THREE_MONTH)) {
+			pnlThreeMonth.setToolTipText(s);
+		}
+	}
+	
 	private void refreshAlignment() {
 		backboard.setBounds(x, y, width, height);
 
@@ -204,11 +235,11 @@ public class LookbackMeter {
 		}
 
 		if (width < 40) {
-			lblOneMonth.setText("1");
-			lblThreeMonth.setText("3");
+			lblOneMonth.setText("1 (" + oneMonthNumber + ")");
+			lblThreeMonth.setText("3 (" + threeMonthNumber + ")");
 		} else {
-			lblOneMonth.setText("1mo");
-			lblThreeMonth.setText("3mo");
+			lblOneMonth.setText("1mo (" + oneMonthNumber + ")");
+			lblThreeMonth.setText("3mo (" + threeMonthNumber + ")");
 		}
 	}
 
