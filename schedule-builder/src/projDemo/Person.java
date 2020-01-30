@@ -1,7 +1,10 @@
 package projDemo;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import projDemo.Enums.*;
 
 public class Person {
 
@@ -12,9 +15,11 @@ public class Person {
 	ArrayList<Sortie> sortiesAllTime = new ArrayList<>();
 	int lookbackOne, lookbackThree;
 
+	ArrayList<IndefiniteGrounded> groundingTags = new ArrayList<>();
+	LocalDate lastEval;
+
 	public Person(String rank, String nameFirst, String nameMiddle, String nameLast, String crewPos, String shop,
 			String flight, String phoneNumber, String address, String social) {
-
 		Main.personIndex.add(this);
 
 		this.rank = rank;
@@ -27,7 +32,6 @@ public class Person {
 		this.phoneNumber = phoneNumber;
 		this.address = address;
 		this.social = social;
-
 	}
 
 	public Person(UUID uuid, ArrayList<Appointment> calendar, String rank, String nameFirst, String nameMiddle,
@@ -44,7 +48,6 @@ public class Person {
 		}
 
 		if (good) {
-
 			Main.personIndex.add(this);
 
 			this.uuid = uuid;
@@ -61,7 +64,6 @@ public class Person {
 			this.address = address;
 			this.social = social;
 		}
-
 	}
 
 	@Override

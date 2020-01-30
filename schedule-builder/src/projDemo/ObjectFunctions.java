@@ -2,6 +2,7 @@ package projDemo;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import projDemo.LookbackMeter.Month;
@@ -178,8 +179,8 @@ public class ObjectFunctions {
 						&& s.startDate.isBefore(oneMonthLookbackRegion[1].plusDays(1)))
 					p.lookbackOne++;
 			}
-			
-			if(p.lookbackOne >= 2) {
+
+			if (p.lookbackOne >= 2) {
 				return true;
 			} else {
 				return false;
@@ -198,8 +199,8 @@ public class ObjectFunctions {
 						&& s.startDate.isBefore(threeMonthLookbackRegion[1].plusDays(1)))
 					p.lookbackThree++;
 			}
-			
-			if(p.lookbackThree >= 6) {
+
+			if (p.lookbackThree >= 6) {
 				return true;
 			} else {
 				return false;
@@ -207,43 +208,102 @@ public class ObjectFunctions {
 
 		}
 
-		
 		return false;
 	}
 
-	public static String getTooltipForMeter(Person p, Month type) {
+	public static String getTooltipForLookbackMeter(Person p, Month type) {
 		String sorties = "<html>";
-		
-		if(type.equals(Month.ONE_MONTH)) {
+
+		if (type.equals(Month.ONE_MONTH)) {
 			LocalDate oneMonthLookbackRegion[] = new LocalDate[2];
 			oneMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
 					.minusMonths(1);
 			oneMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
 					.minusDays(1);
-			
+
 			for (Sortie s : p.sortiesAllTime) {
 				if (s.startDate.isAfter(oneMonthLookbackRegion[0].minusDays(1))
 						&& s.startDate.isBefore(oneMonthLookbackRegion[1].plusDays(1)))
 					sorties += s.sortieNumber + "<br>";
 			}
 		}
-		
-		if(type.equals(Month.THREE_MONTH)) {
+
+		if (type.equals(Month.THREE_MONTH)) {
 			LocalDate threeMonthLookbackRegion[] = new LocalDate[2];
 			threeMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
 					.minusMonths(3);
 			threeMonthLookbackRegion[1] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
 					.minusDays(1);
-			
+
 			for (Sortie s : p.sortiesAllTime) {
 				if (s.startDate.isAfter(threeMonthLookbackRegion[0].minusDays(1))
 						&& s.startDate.isBefore(threeMonthLookbackRegion[1].plusDays(1)))
 					sorties += s.sortieNumber + "<br>";
 			}
 		}
-		
+
 		sorties += "</html>";
+		if(sorties.contentEquals("<html></html>"))
+			return "No flights found";
 		
 		return sorties;
+	}
+
+	public static boolean getCurrencyStatus(Person p) {
+		LocalDate lastDayForCurrency = LocalDate
+				.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth())
+				.minusDays(60);
+		LocalDate mostRecentSortie = LocalDate.of(1990, 01, 01);
+
+		for (Sortie s : p.sortiesAllTime) {
+			if (s.startDate.isAfter(mostRecentSortie)) {
+				mostRecentSortie = s.startDate;
+			}
+		}
+
+		if (mostRecentSortie.isAfter(lastDayForCurrency)) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+	
+	public static String getTooltipForCurrencyMeter(Person p) {
+		LocalDate mostRecentSortie = LocalDate.of(1990, 01, 01);
+
+		String sortieNumber = "";
+
+		for (Sortie s : p.sortiesAllTime) {
+			if (s.startDate.isAfter(mostRecentSortie)) {
+				mostRecentSortie = s.startDate;
+				sortieNumber = s.sortieNumber;
+			}
+		}
+		
+		if(p.sortiesAllTime.size() < 1)
+			return "No flights found";
+
+		return sortieNumber;
+
+	}
+	
+	public static int getCurrencyDaysLeft(Person p) {
+		LocalDate lastDayForCurrency = LocalDate
+				.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth())
+				.minusDays(60);
+		LocalDate mostRecentSortie = LocalDate.of(1990, 01, 01);
+
+		for (Sortie s : p.sortiesAllTime) {
+			if (s.startDate.isAfter(mostRecentSortie)) {
+				mostRecentSortie = s.startDate;
+			}
+		}
+		
+		if(p.sortiesAllTime.size() < 1)
+			return 0;
+		
+		return (int) ChronoUnit.DAYS.between(lastDayForCurrency, mostRecentSortie); 
+
 	}
 }

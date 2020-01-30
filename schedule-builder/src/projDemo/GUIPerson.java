@@ -26,7 +26,8 @@ public class GUIPerson {
 	private JTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
 	boolean createNew;
 
-	private LookbackMeter meter;
+	private LookbackMeter meterLookback;
+	private CurrencyMeter meterCurrency;
 
 	JButton btnAddAppointment;
 
@@ -275,38 +276,63 @@ public class GUIPerson {
 
 			}
 		});
-		
+
 		getFrame().setBounds(100, 100, 650, 500);
-		
+
+		/*
+		 * PERSON STATUS
+		 */
 		JLabel lblStatus = new JLabel("Status");
 		lblStatus.setBounds(500, 5, 140, 25);
 		lblStatus.setFont(new Font(null, 1, 20));
 		getFrame().getContentPane().add(lblStatus);
-		
+
+		/*
+		 * LOOKBACK METER
+		 */
 		JLabel lblLookback = new JLabel("Lookback");
 		lblLookback.setBounds(500, 30, 140, 25);
 		getFrame().getContentPane().add(lblLookback);
-		
-		meter = new LookbackMeter(500, 50, 140, 25);
-		getFrame().getContentPane().add(meter.getPanel());
-		
-		if(ObjectFunctions.getLookbackStatus(p, Month.ONE_MONTH)) {
-			meter.setState(LookbackMeter.State.PASS, Month.ONE_MONTH);
+
+		meterLookback = new LookbackMeter(500, 50, 140, 25);
+		getFrame().getContentPane().add(meterLookback.getPanel());
+
+		if (ObjectFunctions.getLookbackStatus(p, Month.ONE_MONTH)) {
+			meterLookback.setState(LookbackMeter.State.PASS, Month.ONE_MONTH);
 		} else {
-			meter.setState(LookbackMeter.State.FAIL, Month.ONE_MONTH);
+			meterLookback.setState(LookbackMeter.State.FAIL, Month.ONE_MONTH);
 		}
-		
-		meter.setLabelNumber(p.lookbackOne, Month.ONE_MONTH);
-		meter.setPanelTooltip(ObjectFunctions.getTooltipForMeter(p, Month.ONE_MONTH), Month.ONE_MONTH);
-		
-		if(ObjectFunctions.getLookbackStatus(p, Month.THREE_MONTH)) {
-			meter.setState(LookbackMeter.State.PASS, Month.THREE_MONTH);
+
+		meterLookback.setLabelNumber(p.lookbackOne, Month.ONE_MONTH);
+		meterLookback.setPanelTooltip(ObjectFunctions.getTooltipForLookbackMeter(p, Month.ONE_MONTH), Month.ONE_MONTH);
+
+		if (ObjectFunctions.getLookbackStatus(p, Month.THREE_MONTH)) {
+			meterLookback.setState(LookbackMeter.State.PASS, Month.THREE_MONTH);
 		} else {
-			meter.setState(LookbackMeter.State.FAIL, Month.THREE_MONTH);
+			meterLookback.setState(LookbackMeter.State.FAIL, Month.THREE_MONTH);
 		}
+
+		meterLookback.setLabelNumber(p.lookbackThree, Month.THREE_MONTH);
+		meterLookback.setPanelTooltip(ObjectFunctions.getTooltipForLookbackMeter(p, Month.THREE_MONTH), Month.THREE_MONTH);
+
+		/*
+		 * CURRENCY METER
+		 */
+		JLabel lblCurrency = new JLabel("Currency");
+		lblCurrency.setBounds(500, 80, 140, 25);
+		getFrame().getContentPane().add(lblCurrency);
+
+		meterCurrency = new CurrencyMeter(500, 100, 140, 25);
+		getFrame().getContentPane().add(meterCurrency.getPanel());
 		
-		meter.setLabelNumber(p.lookbackThree, Month.THREE_MONTH);
-		meter.setPanelTooltip(ObjectFunctions.getTooltipForMeter(p, Month.THREE_MONTH), Month.THREE_MONTH);
+		if (ObjectFunctions.getCurrencyStatus(p)) {
+			meterCurrency.setState(CurrencyMeter.State.PASS);
+		} else {
+			meterCurrency.setState(CurrencyMeter.State.FAIL);
+		}
+
+		meterCurrency.setLabelNumber(ObjectFunctions.getCurrencyDaysLeft(p));
+		meterCurrency.setPanelTooltip(ObjectFunctions.getTooltipForCurrencyMeter(p));
 	}
 
 	public void refreshList() {
