@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import projDemo.LookbackMeter.Month;
+import projDemo.GroundingMeter.State;;
 
 public class ObjectFunctions {
 
@@ -243,9 +244,9 @@ public class ObjectFunctions {
 		}
 
 		sorties += "</html>";
-		if(sorties.contentEquals("<html></html>"))
+		if (sorties.contentEquals("<html></html>"))
 			return "No flights found";
-		
+
 		return sorties;
 	}
 
@@ -268,7 +269,7 @@ public class ObjectFunctions {
 		}
 
 	}
-	
+
 	public static String getTooltipForCurrencyMeter(Person p) {
 		LocalDate mostRecentSortie = LocalDate.of(1990, 01, 01);
 
@@ -280,14 +281,14 @@ public class ObjectFunctions {
 				sortieNumber = s.sortieNumber;
 			}
 		}
-		
-		if(p.sortiesAllTime.size() < 1)
+
+		if (p.sortiesAllTime.size() < 1)
 			return "No flights found";
 
 		return sortieNumber;
 
 	}
-	
+
 	public static int getCurrencyDaysLeft(Person p) {
 		LocalDate lastDayForCurrency = LocalDate
 				.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth())
@@ -299,11 +300,21 @@ public class ObjectFunctions {
 				mostRecentSortie = s.startDate;
 			}
 		}
-		
-		if(p.sortiesAllTime.size() < 1)
-			return 0;
-		
-		return (int) ChronoUnit.DAYS.between(lastDayForCurrency, mostRecentSortie); 
 
+		if (p.sortiesAllTime.size() < 1)
+			return 0;
+
+		return (int) ChronoUnit.DAYS.between(lastDayForCurrency, mostRecentSortie);
+
+	}
+	
+	public static void groundingMeterManager(Person p, GroundingMeter meter) {
+		if(p.groundingTags.size() <= 0) {
+			meter.setState(State.GREEN);
+			meter.setLabel("Cleared for flight");
+			meter.setPanelTooltip("No tags loaded.");
+		} else if(true) {
+			// ADD ALL STIPULATIONS FOR GROUNDING TAGS
+		}
 	}
 }

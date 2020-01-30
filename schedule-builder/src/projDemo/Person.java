@@ -16,6 +16,7 @@ public class Person {
 	int lookbackOne, lookbackThree;
 
 	ArrayList<IndefiniteGrounded> groundingTags = new ArrayList<>();
+	
 	LocalDate lastEval;
 
 	public Person(String rank, String nameFirst, String nameMiddle, String nameLast, String crewPos, String shop,

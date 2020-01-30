@@ -28,6 +28,7 @@ public class GUIPerson {
 
 	private LookbackMeter meterLookback;
 	private CurrencyMeter meterCurrency;
+	private GroundingMeter meterGrounding;
 
 	JButton btnAddAppointment;
 
@@ -333,6 +334,18 @@ public class GUIPerson {
 
 		meterCurrency.setLabelNumber(ObjectFunctions.getCurrencyDaysLeft(p));
 		meterCurrency.setPanelTooltip(ObjectFunctions.getTooltipForCurrencyMeter(p));
+		
+		/*
+		 * GROUNDING TAGS
+		 */
+		JLabel lblGrounding = new JLabel("Grounding Tags");
+		lblGrounding.setBounds(500, 130, 140, 25);
+		getFrame().getContentPane().add(lblGrounding);
+		
+		meterGrounding = new GroundingMeter(500, 150, 140, 25);
+		getFrame().getContentPane().add(meterGrounding.getPanel());
+		
+		ObjectFunctions.groundingMeterManager(p, meterGrounding);
 	}
 
 	public void refreshList() {

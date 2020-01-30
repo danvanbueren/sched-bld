@@ -1,4 +1,5 @@
 package projDemo;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -50,10 +51,10 @@ public class Sortie {
 		this.endDate = endDate;
 		// this.loadList = loadList;
 	}
-	
+
 	@Override
 	public String toString() {
-		return sortieNumber + " [" + startDate.getYear() + "]";
+		return sortieNumber + " [" + startDate.getMonth() + startDate.getYear() + "]";
 	}
-	
+
 }
