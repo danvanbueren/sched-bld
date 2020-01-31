@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.time.format.DateTimeFormatter;
 
 public class Constants {
+	
+	// BMC (Basic Mission Current) -  BAQ (Basic Aircerw Qual) - not mission qual
 	public enum IndefiniteGrounded {
-		GENERIC_RED, GENERIC_YELLOW, TRAINING_PLAN, NON_CMR, BMC_BAQ, DNIF;
+		GENERIC_RED, GENERIC_YELLOW, NON_CMR, BMC, BAQ, DNIF, SUPERVISED, UQ, TRAINING_PLAN_UQ;
 	}
 
 	public enum GeneralTags {

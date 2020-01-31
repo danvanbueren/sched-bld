@@ -17,8 +17,9 @@ public class Person {
 
 	// these need to be saved and editable!!
 	ArrayList<IndefiniteGrounded> groundingTags = new ArrayList<>();
+	
 	LocalDate lastEvalMsn = LocalDate.of(1990, 01, 01);
-	LocalDate lastEvalQual = LocalDate.of(1990, 01, 01);;
+	LocalDate lastEvalQual = LocalDate.of(1990, 01, 01);
 
 	public Person(String rank, String nameFirst, String nameMiddle, String nameLast, String crewPos, String shop,
 			String flight, String phoneNumber, String address, String social) {

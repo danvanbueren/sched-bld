@@ -323,25 +323,40 @@ public class HelperFunction {
 				labelText += "GENERIC_YELLOW ";
 				tooltipText += "[GENERIC_YELLOW] Generic grounding, waivable<br>";
 				break;
-			case TRAINING_PLAN:
+			case UQ:
 				markYellow = true;
-				labelText += "TRAINING_PLAN ";
-				tooltipText += "[TRAINING_PLAN] Requires instructor<br>";
+				labelText += "UQ ";
+				tooltipText += "[UQ] Requires eval<br>";
+				break;
+			case TRAINING_PLAN_UQ:
+				markYellow = true;
+				labelText += "TRAINING_PLAN_UQ ";
+				tooltipText += "[TRAINING_PLAN_UQ] Special considerations<br>";
 				break;
 			case NON_CMR:
 				markYellow = true;
 				labelText += "NON_CMR ";
 				tooltipText += "[NON_CMR] Requires instructor, waivable<br>";
 				break;
-			case BMC_BAQ:
+			case BMC:
 				markYellow = true;
-				labelText += "BMC_BAQ ";
-				tooltipText += "[BMC_BAQ] Requires instructor, waivable<br>";
+				labelText += "BMC ";
+				tooltipText += "[BMC] Special considerations<br>";
+				break;
+			case BAQ:
+				markYellow = true;
+				labelText += "BAQ ";
+				tooltipText += "[BAQ] Requires instructor, waivable<br>";
 				break;
 			case DNIF:
 				markRed = true;
 				labelText += "DNIF ";
 				tooltipText += "[DNIF] Non-waivable<br>";
+				break;
+			case SUPERVISED:
+				markYellow = true;
+				labelText += "SUPERVISED ";
+				tooltipText += "[SUPERVISED] Special considerations<br>";
 				break;
 			}
 
@@ -373,18 +388,12 @@ public class HelperFunction {
 
 		int daysUntilMsnEvalWindowOpens = (int) ChronoUnit.DAYS.between(LocalDate.now(), p.lastEvalMsn.plusMonths(12));
 
-		/*
-		 * THIS NEEDS TO BE FACT CHECKED!! IS IT REALLY 16 MONTHS?? OR 18??
-		 */
-		int daysUntilMsnEvalWindowCloses = (int) ChronoUnit.DAYS.between(LocalDate.now(), p.lastEvalMsn.plusMonths(16));
+		int daysUntilMsnEvalWindowCloses = (int) ChronoUnit.DAYS.between(LocalDate.now(), p.lastEvalMsn.plusMonths(18));
 
 		int daysUntilQualEvalWindowOpens = (int) ChronoUnit.DAYS.between(LocalDate.now(), p.lastEvalQual.plusMonths(12));
 
-		/*
-		 * THIS NEEDS TO BE FACT CHECKED!! IS IT REALLY 16 MONTHS?? OR 18??
-		 */
 		int daysUntilQualEvalWindowCloses = (int) ChronoUnit.DAYS.between(LocalDate.now(),
-				p.lastEvalQual.plusMonths(16));
+				p.lastEvalQual.plusMonths(18));
 
 		MeterState tempStateMsn, tempStateQual;
 		String tempTooltipMsn, tempTooltipQual;
