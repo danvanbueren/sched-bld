@@ -1,5 +1,8 @@
 package projDemo;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -49,7 +52,7 @@ public class DatabaseComposer {
 
 		}
 
-		ReadWriteIO.write("db.txt", outputBuffer);
+		writeBytes("db.txt", outputBuffer);
 
 		outputBuffer = "";
 
@@ -60,17 +63,17 @@ public class DatabaseComposer {
 			}
 		}
 
-		ReadWriteIO.write("db_.txt", outputBuffer);
+		writeBytes("db_.txt", outputBuffer);
 
 	}
 
 	public static void load() {
 
-		String inputBufferSingle = ReadWriteIO.read("db.txt");
+		String inputBufferSingle = readBytes("db.txt");
 
 		if (inputBufferSingle.isBlank()) {
 			try {
-				ReadWriteIO.write("db.txt", "");
+				writeBytes("db.txt", "");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -99,7 +102,7 @@ public class DatabaseComposer {
 					String calendarString = inputBuffer[currentLine + 12];
 					ArrayList<Appointment> calendar = new ArrayList<>();
 
-					new Person(DataConvert.fromStringToUUID(uuid), calendar, rank, nameFirst, nameMiddle, nameLast,
+					new Person(HelperDataConversion.fromStringToUUID(uuid), calendar, rank, nameFirst, nameMiddle, nameLast,
 							crewPos, shop, flight, phoneNumber, address, social);
 				}
 
@@ -112,8 +115,8 @@ public class DatabaseComposer {
 
 					String[] loadListBuffer = sortieLoadList.split("\\#");
 
-					new Sortie(DataConvert.fromStringToUUID(uuid), sortieNumber,
-							DataConvert.fromStringToLocalDate(startDate), DataConvert.fromStringToLocalDate(endDate),
+					new Sortie(HelperDataConversion.fromStringToUUID(uuid), sortieNumber,
+							HelperDataConversion.fromStringToLocalDate(startDate), HelperDataConversion.fromStringToLocalDate(endDate),
 							loadListBuffer);
 				}
 
@@ -131,11 +134,11 @@ public class DatabaseComposer {
 			}
 		}
 
-		inputBufferSingle = ReadWriteIO.read("db_.txt");
+		inputBufferSingle = readBytes("db_.txt");
 
 		if (inputBufferSingle.isBlank()) {
 			try {
-				ReadWriteIO.write("db_.txt", "");
+				writeBytes("db_.txt", "");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -160,7 +163,7 @@ public class DatabaseComposer {
 				}
 
 				for (Person p : Main.personIndex) {
-					if (p.uuid.equals(DataConvert.fromStringToUUID(aptBuffer[0]))) {
+					if (p.uuid.equals(HelperDataConversion.fromStringToUUID(aptBuffer[0]))) {
 						Appointment a = new Appointment(LocalDate.parse(aptBuffer[1]), LocalDate.parse(aptBuffer[2]),
 								tempFlyable, tempDesc);
 						p.calendar.add(a);
@@ -168,5 +171,31 @@ public class DatabaseComposer {
 				}
 			}
 		}
+	}
+	
+	
+	
+	public static void writeBytes(String fileName, String fileContent) {
+		try (FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
+			fileOutputStream.write(fileContent.getBytes());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String readBytes(String fileName) {
+		String output = "";
+		try (FileInputStream fileInputStream = new FileInputStream(fileName)) {
+			int ch = fileInputStream.read();
+			while (ch != -1) {
+				output += (char) ch;
+				ch = fileInputStream.read();
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Creating db file.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return output;
 	}
 }

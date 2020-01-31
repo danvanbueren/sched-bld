@@ -49,12 +49,11 @@ public class Sortie {
 		this.sortieNumber = sortieNumber;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		// this.loadList = loadList;
 	}
 
 	@Override
 	public String toString() {
-		return sortieNumber + " [" + startDate.getMonth() + startDate.getYear() + "]";
+		return sortieNumber + " [" + startDate.format(Constants.dateTimeFormat) + "]";
 	}
 
 }

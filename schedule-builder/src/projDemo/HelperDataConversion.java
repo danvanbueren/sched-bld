@@ -1,11 +1,12 @@
 package projDemo;
+
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class DataConvert {
+public class HelperDataConversion {
 
 	public static LocalDate fromMultIntToLocalDate(int year, int month, int date) {
 

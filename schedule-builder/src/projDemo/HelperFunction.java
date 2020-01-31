@@ -1,14 +1,14 @@
 package projDemo;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
-import projDemo.LookbackMeter.Month;
-import projDemo.GroundingMeter.State;;
+import projDemo.Constants.IndefiniteGrounded;
+import projDemo.Constants.MeterState;
+import projDemo.Constants.MeterType;
 
-public class ObjectFunctions {
+public class HelperFunction {
 
 	public static void systemCreateAppointment(Person p) {
 		LocalDate startDate = null, endDate = null;
@@ -20,10 +20,8 @@ public class ObjectFunctions {
 
 	public static void systemCreateSortie(String start, String end, String squadron, String type) {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-
-		LocalDate dateStart = LocalDate.parse(start, formatter);
-		LocalDate dateEnd = LocalDate.parse(end, formatter);
+		LocalDate dateStart = LocalDate.parse(start, Constants.dateTimeFormat);
+		LocalDate dateEnd = LocalDate.parse(end, Constants.dateTimeFormat);
 
 		switch (squadron) {
 		case "960 AACS":
@@ -76,7 +74,7 @@ public class ObjectFunctions {
 			break;
 		}
 
-		String sortieNumber = DataConvert.toSortieNumber(dateStart, squadron, type);
+		String sortieNumber = HelperDataConversion.toSortieNumber(dateStart, squadron, type);
 
 		@SuppressWarnings("unused")
 		Sortie s = new Sortie(sortieNumber, dateStart, dateEnd);
@@ -85,10 +83,8 @@ public class ObjectFunctions {
 	public static Sortie systemEditSortie(Sortie s, ArrayList<Person> loadList, String start, String end,
 			String squadron, String type) {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-
-		LocalDate dateStart = LocalDate.parse(start, formatter);
-		LocalDate dateEnd = LocalDate.parse(end, formatter);
+		LocalDate dateStart = LocalDate.parse(start, Constants.dateTimeFormat);
+		LocalDate dateEnd = LocalDate.parse(end, Constants.dateTimeFormat);
 
 		switch (squadron) {
 		case "960 AACS":
@@ -141,7 +137,7 @@ public class ObjectFunctions {
 			break;
 		}
 
-		String sortieNumber = DataConvert.toSortieNumber(dateStart, squadron, type);
+		String sortieNumber = HelperDataConversion.toSortieNumber(dateStart, squadron, type);
 
 		s.startDate = dateStart;
 		s.endDate = dateEnd;
@@ -155,7 +151,7 @@ public class ObjectFunctions {
 
 	}
 
-	public static boolean getLookbackStatus(Person p, LookbackMeter.Month type) {
+	public static boolean getLookbackStatus(Person p, MeterType type) {
 		p.sortiesAllTime.clear();
 		p.lookbackOne = 0;
 		p.lookbackThree = 0;
@@ -167,7 +163,7 @@ public class ObjectFunctions {
 			}
 		}
 
-		if (type.equals(LookbackMeter.Month.ONE_MONTH)) {
+		if (type.equals(MeterType.ONE)) {
 
 			LocalDate oneMonthLookbackRegion[] = new LocalDate[2];
 			oneMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
@@ -187,7 +183,7 @@ public class ObjectFunctions {
 				return false;
 			}
 
-		} else if (type.equals(LookbackMeter.Month.THREE_MONTH)) {
+		} else if (type.equals(MeterType.THREE)) {
 
 			LocalDate threeMonthLookbackRegion[] = new LocalDate[2];
 			threeMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
@@ -212,10 +208,10 @@ public class ObjectFunctions {
 		return false;
 	}
 
-	public static String getTooltipForLookbackMeter(Person p, Month type) {
+	public static String getTooltipForLookbackMeter(Person p, MeterType type) {
 		String sorties = "<html>";
 
-		if (type.equals(Month.ONE_MONTH)) {
+		if (type.equals(MeterType.ONE)) {
 			LocalDate oneMonthLookbackRegion[] = new LocalDate[2];
 			oneMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
 					.minusMonths(1);
@@ -229,7 +225,7 @@ public class ObjectFunctions {
 			}
 		}
 
-		if (type.equals(Month.THREE_MONTH)) {
+		if (type.equals(MeterType.THREE)) {
 			LocalDate threeMonthLookbackRegion[] = new LocalDate[2];
 			threeMonthLookbackRegion[0] = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 01)
 					.minusMonths(3);
@@ -307,14 +303,130 @@ public class ObjectFunctions {
 		return (int) ChronoUnit.DAYS.between(lastDayForCurrency, mostRecentSortie);
 
 	}
-	
-	public static void groundingMeterManager(Person p, GroundingMeter meter) {
-		if(p.groundingTags.size() <= 0) {
-			meter.setState(State.GREEN);
-			meter.setLabel("Cleared for flight");
-			meter.setPanelTooltip("No tags loaded.");
-		} else if(true) {
-			// ADD ALL STIPULATIONS FOR GROUNDING TAGS
+
+	public static void groundingMeterManager(Person p, MeterGrounding meter) {
+
+		meter.setState(MeterState.GREEN);
+
+		boolean markYellow = false, markRed = false;
+		String tooltipText = "<html>", labelText = "";
+
+		for (IndefiniteGrounded ig : p.groundingTags) {
+			switch (ig) {
+			case GENERIC_RED:
+				markRed = true;
+				labelText += "GENERIC_RED ";
+				tooltipText += "[GENERIC_RED] Generic grounding, non-waivable<br>";
+				break;
+			case GENERIC_YELLOW:
+				markYellow = true;
+				labelText += "GENERIC_YELLOW ";
+				tooltipText += "[GENERIC_YELLOW] Generic grounding, waivable<br>";
+				break;
+			case TRAINING_PLAN:
+				markYellow = true;
+				labelText += "TRAINING_PLAN ";
+				tooltipText += "[TRAINING_PLAN] Requires instructor<br>";
+				break;
+			case NON_CMR:
+				markYellow = true;
+				labelText += "NON_CMR ";
+				tooltipText += "[NON_CMR] Requires instructor, waivable<br>";
+				break;
+			case BMC_BAQ:
+				markYellow = true;
+				labelText += "BMC_BAQ ";
+				tooltipText += "[BMC_BAQ] Requires instructor, waivable<br>";
+				break;
+			case DNIF:
+				markRed = true;
+				labelText += "DNIF ";
+				tooltipText += "[DNIF] Non-waivable<br>";
+				break;
+			}
+
 		}
+
+		tooltipText += "</html>";
+
+		if (tooltipText.contentEquals("<html></html>")) {
+			tooltipText = "No tags found";
+		}
+
+		if (labelText == "")
+			labelText = "Cleared for flight";
+
+		meter.setLabel(labelText);
+		meter.setPanelTooltip(tooltipText);
+
+		if (markRed) {
+			meter.setState(MeterState.RED);
+		} else if (markYellow) {
+			meter.setState(MeterState.YELLOW);
+		}
+	}
+
+	public static void evalMeterManager(Person p, MeterEval meter) {
+		meter.setState(MeterState.UNK, MeterState.UNK);
+		meter.setPanelTooltip("", "");
+		meter.setLabelNumber(0, 0);
+
+		int daysUntilMsnEvalWindowOpens = (int) ChronoUnit.DAYS.between(LocalDate.now(), p.lastEvalMsn.plusMonths(12));
+
+		/*
+		 * THIS NEEDS TO BE FACT CHECKED!! IS IT REALLY 16 MONTHS?? OR 18??
+		 */
+		int daysUntilMsnEvalWindowCloses = (int) ChronoUnit.DAYS.between(LocalDate.now(), p.lastEvalMsn.plusMonths(16));
+
+		int daysUntilQualEvalWindowOpens = (int) ChronoUnit.DAYS.between(LocalDate.now(), p.lastEvalQual.plusMonths(12));
+
+		/*
+		 * THIS NEEDS TO BE FACT CHECKED!! IS IT REALLY 16 MONTHS?? OR 18??
+		 */
+		int daysUntilQualEvalWindowCloses = (int) ChronoUnit.DAYS.between(LocalDate.now(),
+				p.lastEvalQual.plusMonths(16));
+
+		MeterState tempStateMsn, tempStateQual;
+		String tempTooltipMsn, tempTooltipQual;
+		int tempNumMsn, tempNumQual;
+
+		if (daysUntilMsnEvalWindowOpens > 0) {
+			// set msn state green, return int & tooltip
+			tempStateMsn = MeterState.GREEN;
+			tempTooltipMsn = "Mission eval window will open in " + daysUntilMsnEvalWindowOpens + " days";
+			tempNumMsn = daysUntilMsnEvalWindowOpens;
+		} else if (daysUntilMsnEvalWindowCloses > 0) {
+			// set msn state yellow, return int & tooltip
+			tempStateMsn = MeterState.YELLOW;
+			tempTooltipMsn = "Mission eval window is open for " + daysUntilMsnEvalWindowCloses + " days";
+			tempNumMsn = daysUntilMsnEvalWindowCloses;
+		} else {
+			// set msn state red, return int & tooltip
+			tempStateMsn = MeterState.RED;
+			tempTooltipMsn = "Mission eval window missed by " + daysUntilMsnEvalWindowCloses + " days";
+			tempNumMsn = daysUntilMsnEvalWindowCloses;
+		}
+
+		if (daysUntilQualEvalWindowOpens > 0) {
+			// set qual state green, return int & tooltip
+			tempStateQual = MeterState.GREEN;
+			tempTooltipQual = "Qual eval window will open in " + daysUntilQualEvalWindowOpens + " days";
+			tempNumQual = daysUntilQualEvalWindowOpens;
+		} else if (daysUntilQualEvalWindowCloses > 0) {
+			// set qual state yellow, return int & tooltip
+			tempStateQual = MeterState.YELLOW;
+			tempTooltipQual = "Qual eval window is open for " + daysUntilQualEvalWindowCloses + " days";
+			tempNumQual = daysUntilQualEvalWindowCloses;
+		} else {
+			// set qual state red, return int & tooltip
+			tempStateQual = MeterState.RED;
+			tempTooltipQual = "Qual eval window missed by " + daysUntilQualEvalWindowCloses + " days";
+			tempNumQual = daysUntilQualEvalWindowCloses;
+		}
+
+		meter.setState(tempStateQual, tempStateMsn);
+		meter.setPanelTooltip(tempTooltipQual, tempTooltipMsn);
+		meter.setLabelNumber(tempNumQual, tempNumMsn);
+
 	}
 }

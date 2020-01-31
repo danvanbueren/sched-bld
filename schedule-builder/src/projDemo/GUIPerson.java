@@ -16,7 +16,8 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import projDemo.LookbackMeter.Month;
+import projDemo.Constants.MeterType;
+import projDemo.Constants.MeterState;;
 
 public class GUIPerson {
 
@@ -26,11 +27,12 @@ public class GUIPerson {
 	private JTextField txtNmF, txtNmM, txtNmL, txtPhone, txtAddr, txtId, txtCrewPos, txtFlight, txtRank, txtShop;
 	boolean createNew;
 
-	private LookbackMeter meterLookback;
-	private CurrencyMeter meterCurrency;
-	private GroundingMeter meterGrounding;
+	private MeterLookback meterLookback;
+	private MeterCurrency meterCurrency;
+	private MeterGrounding meterGrounding;
+	private MeterEval meterEval;
 
-	JButton btnAddAppointment;
+	JButton btnAddAppointment, btnGroundTags, btnViewRap;
 
 	JList<Appointment> list;
 	DefaultListModel<Appointment> listModel;
@@ -295,26 +297,27 @@ public class GUIPerson {
 		lblLookback.setBounds(500, 30, 140, 25);
 		getFrame().getContentPane().add(lblLookback);
 
-		meterLookback = new LookbackMeter(500, 50, 140, 25);
+		meterLookback = new MeterLookback(500, 50, 140, 25);
 		getFrame().getContentPane().add(meterLookback.getPanel());
 
-		if (ObjectFunctions.getLookbackStatus(p, Month.ONE_MONTH)) {
-			meterLookback.setState(LookbackMeter.State.PASS, Month.ONE_MONTH);
+		if (HelperFunction.getLookbackStatus(p, MeterType.ONE)) {
+			meterLookback.setState(MeterState.GREEN, MeterType.ONE);
 		} else {
-			meterLookback.setState(LookbackMeter.State.FAIL, Month.ONE_MONTH);
+			meterLookback.setState(MeterState.RED, MeterType.ONE);
 		}
 
-		meterLookback.setLabelNumber(p.lookbackOne, Month.ONE_MONTH);
-		meterLookback.setPanelTooltip(ObjectFunctions.getTooltipForLookbackMeter(p, Month.ONE_MONTH), Month.ONE_MONTH);
+		meterLookback.setLabelNumber(p.lookbackOne, MeterType.ONE);
+		meterLookback.setPanelTooltip(HelperFunction.getTooltipForLookbackMeter(p, MeterType.ONE), MeterType.ONE);
 
-		if (ObjectFunctions.getLookbackStatus(p, Month.THREE_MONTH)) {
-			meterLookback.setState(LookbackMeter.State.PASS, Month.THREE_MONTH);
+		if (HelperFunction.getLookbackStatus(p, MeterType.THREE)) {
+			meterLookback.setState(MeterState.GREEN, MeterType.THREE);
 		} else {
-			meterLookback.setState(LookbackMeter.State.FAIL, Month.THREE_MONTH);
+			meterLookback.setState(MeterState.RED, MeterType.THREE);
 		}
 
-		meterLookback.setLabelNumber(p.lookbackThree, Month.THREE_MONTH);
-		meterLookback.setPanelTooltip(ObjectFunctions.getTooltipForLookbackMeter(p, Month.THREE_MONTH), Month.THREE_MONTH);
+		meterLookback.setLabelNumber(p.lookbackThree, MeterType.THREE);
+		meterLookback.setPanelTooltip(HelperFunction.getTooltipForLookbackMeter(p, MeterType.THREE),
+				MeterType.THREE);
 
 		/*
 		 * CURRENCY METER
@@ -323,29 +326,54 @@ public class GUIPerson {
 		lblCurrency.setBounds(500, 80, 140, 25);
 		getFrame().getContentPane().add(lblCurrency);
 
-		meterCurrency = new CurrencyMeter(500, 100, 140, 25);
+		meterCurrency = new MeterCurrency(500, 100, 140, 25);
 		getFrame().getContentPane().add(meterCurrency.getPanel());
-		
-		if (ObjectFunctions.getCurrencyStatus(p)) {
-			meterCurrency.setState(CurrencyMeter.State.PASS);
+
+		if (HelperFunction.getCurrencyStatus(p)) {
+			meterCurrency.setState(MeterState.GREEN);
 		} else {
-			meterCurrency.setState(CurrencyMeter.State.FAIL);
+			meterCurrency.setState(MeterState.RED);
 		}
 
-		meterCurrency.setLabelNumber(ObjectFunctions.getCurrencyDaysLeft(p));
-		meterCurrency.setPanelTooltip(ObjectFunctions.getTooltipForCurrencyMeter(p));
-		
+		meterCurrency.setLabelNumber(HelperFunction.getCurrencyDaysLeft(p));
+		meterCurrency.setPanelTooltip(HelperFunction.getTooltipForCurrencyMeter(p));
+
 		/*
-		 * GROUNDING TAGS
+		 * GROUNDING METER
 		 */
 		JLabel lblGrounding = new JLabel("Grounding Tags");
 		lblGrounding.setBounds(500, 130, 140, 25);
 		getFrame().getContentPane().add(lblGrounding);
-		
-		meterGrounding = new GroundingMeter(500, 150, 140, 25);
+
+		meterGrounding = new MeterGrounding(500, 150, 140, 25);
 		getFrame().getContentPane().add(meterGrounding.getPanel());
+
+		HelperFunction.groundingMeterManager(p, meterGrounding);
 		
-		ObjectFunctions.groundingMeterManager(p, meterGrounding);
+		/*
+		 * EVAL METER
+		 */
+		JLabel lblEval = new JLabel("Eval Window");
+		lblEval.setBounds(500, 180, 140, 25);
+		getFrame().getContentPane().add(lblEval);
+		
+		meterEval = new MeterEval(500, 200, 140, 25);
+		getFrame().getContentPane().add(meterEval.getPanel());
+		
+		HelperFunction.evalMeterManager(p, meterEval);
+		
+		/*
+		 * STATUS BUTTONS
+		 */
+		btnGroundTags = new JButton("Edit Ground Tags");
+		btnGroundTags.setBounds(500, 245, 140, 25);
+		getFrame().getContentPane().add(btnGroundTags);
+		btnGroundTags.setEnabled(false);
+		
+		btnViewRap = new JButton("View RAP");
+		btnViewRap.setBounds(500, 275, 140, 25);
+		getFrame().getContentPane().add(btnViewRap);
+		btnViewRap.setEnabled(false);
 	}
 
 	public void refreshList() {

@@ -4,9 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
@@ -27,9 +24,6 @@ public class GUISortie {
 
 	private JFrame frame;
 	private JTextField txtFilter;
-
-	DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
 
 	DefaultListModel<Person> modelRoster, modelLoadlist;
 	JList<Person> listRoster, listLoadlist;
@@ -59,8 +53,8 @@ public class GUISortie {
 
 		getFrame().setTitle("Telescope - Sortie (Edit: " + s.sortieNumber + ")");
 
-		txtStartDate.setText(s.startDate.format(formatter));
-		txtEndDate.setText(s.endDate.format(formatter));
+		txtStartDate.setText(s.startDate.format(Constants.dateTimeFormat));
+		txtEndDate.setText(s.endDate.format(Constants.dateTimeFormat));
 
 		comboSquadron.setSelectedItem("96" + s.sortieNumber.charAt(1) + " AACS");
 		/*
@@ -177,7 +171,7 @@ public class GUISortie {
 		lblEndDate.setBounds(6, 49, 100, 25);
 		getFrame().getContentPane().add(lblEndDate);
 
-		txtEndDate = new JFormattedTextField(df);
+		txtEndDate = new JFormattedTextField(Constants.dateTimeFormat);
 		txtEndDate.setColumns(10);
 		txtEndDate.setBounds(6, 71, 234, 26);
 		getFrame().getContentPane().add(txtEndDate);
@@ -186,7 +180,7 @@ public class GUISortie {
 		lblStartDate.setBounds(6, 6, 170, 25);
 		getFrame().getContentPane().add(lblStartDate);
 
-		txtStartDate = new JFormattedTextField(df);
+		txtStartDate = new JFormattedTextField(Constants.dateTimeFormat);
 
 		txtStartDate.setColumns(10);
 		txtStartDate.setBounds(6, 28, 234, 26);
@@ -251,18 +245,17 @@ public class GUISortie {
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (createNew) {
-					ObjectFunctions.systemCreateSortie(txtStartDate.getText(), txtEndDate.getText(),
+					HelperFunction.systemCreateSortie(txtStartDate.getText(), txtEndDate.getText(),
 							comboSquadron.getSelectedItem().toString(), comboSortieType.getSelectedItem().toString());
 				} else {
 					ArrayList<Person> tempLoadList = new ArrayList<>();
-					
-					for(int i = 0; i < modelLoadlist.getSize(); i++) {
+
+					for (int i = 0; i < modelLoadlist.getSize(); i++) {
 						tempLoadList.add(modelLoadlist.elementAt(i));
 					}
-					
-					s = ObjectFunctions.systemEditSortie(s, tempLoadList, txtStartDate.getText(),
-							txtEndDate.getText(), comboSquadron.getSelectedItem().toString(),
-							comboSortieType.getSelectedItem().toString());
+
+					s = HelperFunction.systemEditSortie(s, tempLoadList, txtStartDate.getText(), txtEndDate.getText(),
+							comboSquadron.getSelectedItem().toString(), comboSortieType.getSelectedItem().toString());
 					/*
 					 * NEED TO ADD LOADLIST!!!
 					 */
@@ -316,9 +309,9 @@ public class GUISortie {
 		for (Person p : s.loadList) {
 			modelLoadlist.addElement(p);
 		}
-		
+
 		for (Person p : Main.personIndex) {
-			if(!modelLoadlist.contains(p)) {
+			if (!modelLoadlist.contains(p)) {
 				modelRoster.addElement(p);
 			}
 		}

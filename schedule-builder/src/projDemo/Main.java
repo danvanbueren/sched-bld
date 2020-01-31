@@ -9,7 +9,7 @@ public class Main {
 	public static ArrayList<Sortie> sortieIndex = new ArrayList<>();
 
 	public static void main(String args[]) {
-		
+
 		DatabaseComposer.load();
 
 		EventQueue.invokeLater(new Runnable() {

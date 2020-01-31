@@ -18,8 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class GUITelescope {
 
@@ -107,18 +105,6 @@ public class GUITelescope {
 		lblSorties.setBounds(0, 0, 343, 20);
 		panelSorties.add(lblSorties);
 
-		tabbedPaneMain.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				if (tabbedPaneMain.getSelectedComponent().equals(tabbedPaneMain.getComponent(2))) {
-
-					// refresh lookback
-					// ObjectFunctions.refreshLookbackValues();
-				}
-
-			}
-		});
-		
-
 		listSorties = new JList<Sortie>();
 		listModelSorties = new DefaultListModel<Sortie>();
 
@@ -167,7 +153,6 @@ public class GUITelescope {
 				JList list = (JList) evt.getSource();
 				if (evt.getClickCount() >= 2) {
 					int index = list.locationToIndex(evt.getPoint());
-					// viewSortie(index);
 					Sortie s = Main.sortieIndex.get(index);
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {

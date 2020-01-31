@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import javax.swing.DefaultComboBoxModel;
@@ -30,14 +29,12 @@ public class GUIAppointment {
 	JCheckBox chckSameDate;
 	JButton btnDelete, btnSubmit;
 	JPanel panel;
-	
+
 	Person p;
 	Appointment a;
 	UUID windowSignature;
 
 	boolean createNew;
-
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
 
 	public GUIAppointment(Person p, UUID windowSignature) {
 		initialize(p, windowSignature);
@@ -62,8 +59,8 @@ public class GUIAppointment {
 			comboBox.setSelectedItem("No");
 		}
 
-		txtStartDate.setText(a.startDate.format(formatter));
-		txtEndDate.setText(a.endDate.format(formatter));
+		txtStartDate.setText(a.startDate.format(Constants.dateTimeFormat));
+		txtEndDate.setText(a.endDate.format(Constants.dateTimeFormat));
 
 		if (!a.startDate.isEqual(a.endDate)) {
 			chckSameDate.setSelected(false);
@@ -207,29 +204,29 @@ public class GUIAppointment {
 
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				LocalDate startDate = LocalDate.parse(txtStartDate.getText(), formatter);;
-				LocalDate endDate = LocalDate.parse(txtEndDate.getText(), formatter);;
+				LocalDate startDate = LocalDate.parse(txtStartDate.getText(), Constants.dateTimeFormat);
+				LocalDate endDate = LocalDate.parse(txtEndDate.getText(), Constants.dateTimeFormat);
 				boolean isFlyable = false;
 				String description = ftfDescription.getText();
-				
-				if(comboBox.getSelectedItem().toString().contentEquals("Yes")) 
+
+				if (comboBox.getSelectedItem().toString().contentEquals("Yes"))
 					isFlyable = true;
-				
+
 				if (createNew) {
 					p.calendar.add(new Appointment(startDate, endDate, isFlyable, description));
-					
+
 				} else {
 					a.startDate = startDate;
 					a.endDate = endDate;
 					a.isFlyable = isFlyable;
 					a.description = description;
 				}
-				
+
 				for (GUIPerson window : GUITelescope.personWindowSignatures) {
 					if (window.windowSignature.equals(windowSignature))
 						window.refreshList();
 				}
-				
+
 				frame.setVisible(false);
 				frame.dispose();
 
