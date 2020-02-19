@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import projDemo.Constants.GeneralTags;
 import projDemo.Constants.IndefiniteGrounded;
 
 public class Person {
@@ -17,6 +18,7 @@ public class Person {
 
 	// these need to be saved and editable!!
 	ArrayList<IndefiniteGrounded> groundingTags = new ArrayList<>();
+	ArrayList<GeneralTags> generalTags = new ArrayList<>();
 	
 	LocalDate lastEvalMsn = LocalDate.of(1990, 01, 01);
 	LocalDate lastEvalQual = LocalDate.of(1990, 01, 01);

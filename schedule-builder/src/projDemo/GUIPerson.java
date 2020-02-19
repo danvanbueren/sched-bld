@@ -368,12 +368,26 @@ public class GUIPerson {
 		btnGroundTags = new JButton("Edit Ground Tags");
 		btnGroundTags.setBounds(500, 245, 140, 25);
 		getFrame().getContentPane().add(btnGroundTags);
-		btnGroundTags.setEnabled(false);
 		
 		btnViewRap = new JButton("View RAP");
 		btnViewRap.setBounds(500, 275, 140, 25);
 		getFrame().getContentPane().add(btnViewRap);
 		btnViewRap.setEnabled(false);
+		
+		btnGroundTags.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							GUITags window = new GUITags(p, windowSignature);
+							window.getFrame().setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
 	}
 
 	public void refreshList() {

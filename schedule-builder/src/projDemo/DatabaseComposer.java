@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import projDemo.Constants.IndefiniteGrounded;
+
 public class DatabaseComposer {
 
 	public static void save() {
@@ -29,7 +31,6 @@ public class DatabaseComposer {
 
 			outputBuffer += "%~" + uuid + "~" + sortieNumber + "~" + startDate + "~" + endDate + "~" + loadList
 					+ System.getProperty("line.separator");
-
 		}
 
 		for (Person p : Main.personIndex) {
@@ -45,10 +46,17 @@ public class DatabaseComposer {
 			String address = p.address;
 			String social = p.social;
 			String calendar = p.calendar.toString();
+			String groundingTags = "";
+			
+			for(IndefiniteGrounded ig : p.groundingTags) {
+				groundingTags += ig + ",";
+			}
+			
+			// groundingTags -= groundingTags;
 
 			outputBuffer += "@~" + uuid + "~" + rank + "~" + nameFirst + "~" + nameMiddle + "~" + nameLast + "~"
 					+ crewPos + "~" + shop + "~" + flight + "~" + phoneNumber + "~" + address + "~" + social + "~"
-					+ calendar + System.getProperty("line.separator");
+					+ calendar + "~" + groundingTags + System.getProperty("line.separator");
 
 		}
 
