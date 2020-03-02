@@ -3,12 +3,19 @@ package projDemo;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import projDemo.Constants.IndefiniteGrounded;
 
 public class DatabaseComposer {
+
+	private static ArrayList<String> dbIndex;
+	private static String currentUUID;
 
 	public static void save() {
 
@@ -47,11 +54,11 @@ public class DatabaseComposer {
 			String social = p.social;
 			String calendar = p.calendar.toString();
 			String groundingTags = "";
-			
-			for(IndefiniteGrounded ig : p.groundingTags) {
+
+			for (IndefiniteGrounded ig : p.groundingTags) {
 				groundingTags += ig + ",";
 			}
-			
+
 			// groundingTags -= groundingTags;
 
 			outputBuffer += "@~" + uuid + "~" + rank + "~" + nameFirst + "~" + nameMiddle + "~" + nameLast + "~"
@@ -110,8 +117,8 @@ public class DatabaseComposer {
 					String calendarString = inputBuffer[currentLine + 12];
 					ArrayList<Appointment> calendar = new ArrayList<>();
 
-					new Person(HelperDataConversion.fromStringToUUID(uuid), calendar, rank, nameFirst, nameMiddle, nameLast,
-							crewPos, shop, flight, phoneNumber, address, social);
+					new Person(HelperDataConversion.fromStringToUUID(uuid), calendar, rank, nameFirst, nameMiddle,
+							nameLast, crewPos, shop, flight, phoneNumber, address, social);
 				}
 
 				if (s.contentEquals("%")) {
@@ -124,8 +131,8 @@ public class DatabaseComposer {
 					String[] loadListBuffer = sortieLoadList.split("\\#");
 
 					new Sortie(HelperDataConversion.fromStringToUUID(uuid), sortieNumber,
-							HelperDataConversion.fromStringToLocalDate(startDate), HelperDataConversion.fromStringToLocalDate(endDate),
-							loadListBuffer);
+							HelperDataConversion.fromStringToLocalDate(startDate),
+							HelperDataConversion.fromStringToLocalDate(endDate), loadListBuffer);
 				}
 
 				currentLine++;
@@ -180,9 +187,7 @@ public class DatabaseComposer {
 			}
 		}
 	}
-	
-	
-	
+
 	public static void writeBytes(String fileName, String fileContent) {
 		try (FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
 			fileOutputStream.write(fileContent.getBytes());
@@ -206,4 +211,105 @@ public class DatabaseComposer {
 		}
 		return output;
 	}
+
+	public static void serialWrite(Object o, String directory) {
+
+		try {
+			FileOutputStream fos = new FileOutputStream(directory);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(o);
+			oos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void serialWriteController() {
+
+		for (Sortie s : Main.sortieIndex) {
+			currentUUID = "s_" + UUID.randomUUID().toString();
+			dbIndex.add(currentUUID);
+			serialWrite(s, currentUUID);
+		}
+
+		for (Person p : Main.personIndex) {
+			currentUUID = "p_" + UUID.randomUUID().toString();
+			dbIndex.add(currentUUID);
+			serialWrite(p, currentUUID);
+			
+			for (Appointment a : p.calendar) {
+				currentUUID = "a_" + UUID.randomUUID().toString();
+				dbIndex.add(currentUUID);
+				serialWrite(a, currentUUID);
+			}
+		}
+		
+		serialWrite(dbIndex, "index");
+	}
+
+	public static Person serialReadPerson(String directory) {
+
+		Person result = null;
+
+		try {
+			FileInputStream fis = new FileInputStream(directory);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			result = (Person) ois.readObject();
+			ois.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public static Sortie serialReadSortie(String directory) {
+
+		Sortie result = null;
+
+		try {
+			FileInputStream fis = new FileInputStream(directory);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			result = (Sortie) ois.readObject();
+			ois.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public static Appointment serialReadAppointment(String directory) {
+
+		Appointment result = null;
+
+		try {
+			FileInputStream fis = new FileInputStream(directory);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			result = (Appointment) ois.readObject();
+			ois.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
 }
