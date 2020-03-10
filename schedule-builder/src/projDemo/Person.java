@@ -1,5 +1,6 @@
 package projDemo;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -7,7 +8,9 @@ import java.util.UUID;
 import projDemo.Constants.GeneralTags;
 import projDemo.Constants.IndefiniteGrounded;
 
-public class Person {
+public class Person implements Serializable {
+
+	private static final long serialVersionUID = 8857127284449675524L;
 
 	UUID uuid = UUID.randomUUID();
 
@@ -19,7 +22,7 @@ public class Person {
 	// these need to be saved and editable!!
 	ArrayList<IndefiniteGrounded> groundingTags = new ArrayList<>();
 	ArrayList<GeneralTags> generalTags = new ArrayList<>();
-	
+
 	LocalDate lastEvalMsn = LocalDate.of(1990, 01, 01);
 	LocalDate lastEvalQual = LocalDate.of(1990, 01, 01);
 
@@ -42,7 +45,7 @@ public class Person {
 	public Person(UUID uuid, ArrayList<Appointment> calendar, String rank, String nameFirst, String nameMiddle,
 			String nameLast, String crewPos, String shop, String flight, String phoneNumber, String address,
 			String social) {
-		
+
 		boolean good = true;
 
 		for (Person per : Main.personIndex) {

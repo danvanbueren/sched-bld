@@ -9,8 +9,8 @@ public class Main {
 	public static ArrayList<Sortie> sortieIndex = new ArrayList<>();
 
 	public static void main(String args[]) {
-
-		DatabaseComposer.load();
+		
+		DatabaseComposer.serialReadController();
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

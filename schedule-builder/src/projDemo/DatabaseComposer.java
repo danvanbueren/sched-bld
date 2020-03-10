@@ -1,218 +1,19 @@
 package projDemo;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.UUID;
-
-import projDemo.Constants.IndefiniteGrounded;
 
 public class DatabaseComposer {
 
-	private static ArrayList<String> dbIndex;
 	private static String currentUUID;
 
-	public static void save() {
-
-		String outputBuffer = "";
-
-		for (Sortie s : Main.sortieIndex) {
-			String uuid = s.uuid.toString();
-			String sortieNumber = s.sortieNumber;
-			String startDate = s.startDate.toString();
-			String endDate = s.endDate.toString();
-			String loadList = "";
-
-			int i = 1;
-			for (Person p : s.loadList) {
-				loadList += p.uuid;
-				if (i < s.loadList.size())
-					loadList += "#";
-				i++;
-			}
-
-			outputBuffer += "%~" + uuid + "~" + sortieNumber + "~" + startDate + "~" + endDate + "~" + loadList
-					+ System.getProperty("line.separator");
-		}
-
-		for (Person p : Main.personIndex) {
-			String uuid = p.uuid.toString();
-			String rank = p.rank;
-			String nameFirst = p.nameFirst;
-			String nameMiddle = p.nameMiddle;
-			String nameLast = p.nameLast;
-			String crewPos = p.crewPos;
-			String shop = p.shop;
-			String flight = p.flight;
-			String phoneNumber = p.phoneNumber;
-			String address = p.address;
-			String social = p.social;
-			String calendar = p.calendar.toString();
-			String groundingTags = "";
-
-			for (IndefiniteGrounded ig : p.groundingTags) {
-				groundingTags += ig + ",";
-			}
-
-			// groundingTags -= groundingTags;
-
-			outputBuffer += "@~" + uuid + "~" + rank + "~" + nameFirst + "~" + nameMiddle + "~" + nameLast + "~"
-					+ crewPos + "~" + shop + "~" + flight + "~" + phoneNumber + "~" + address + "~" + social + "~"
-					+ calendar + "~" + groundingTags + System.getProperty("line.separator");
-
-		}
-
-		writeBytes("db.txt", outputBuffer);
-
-		outputBuffer = "";
-
-		for (Person p : Main.personIndex) {
-			for (Appointment a : p.calendar) {
-				outputBuffer += p.uuid + "~" + a.startDate + "~" + a.endDate + "~" + a.isFlyable + "~" + a.description
-						+ System.getProperty("line.separator");
-			}
-		}
-
-		writeBytes("db_.txt", outputBuffer);
-
-	}
-
-	public static void load() {
-
-		String inputBufferSingle = readBytes("db.txt");
-
-		if (inputBufferSingle.isBlank()) {
-			try {
-				writeBytes("db.txt", "");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		} else {
-
-			String[] inputBuffer = inputBufferSingle.replace(System.getProperty("line.separator"), "~").split("\\~");
-
-			int currentLine = 0;
-
-			for (String s : inputBuffer) {
-				if (s.contentEquals("@")) {
-					String uuid = inputBuffer[currentLine + 1];
-					String rank = inputBuffer[currentLine + 2];
-					String nameFirst = inputBuffer[currentLine + 3];
-					String nameMiddle = inputBuffer[currentLine + 4];
-					String nameLast = inputBuffer[currentLine + 5];
-					String crewPos = inputBuffer[currentLine + 6];
-					String shop = inputBuffer[currentLine + 7];
-					String flight = inputBuffer[currentLine + 8];
-					String phoneNumber = inputBuffer[currentLine + 9];
-					String address = inputBuffer[currentLine + 10];
-					String social = inputBuffer[currentLine + 11];
-
-					@SuppressWarnings("unused")
-					String calendarString = inputBuffer[currentLine + 12];
-					ArrayList<Appointment> calendar = new ArrayList<>();
-
-					new Person(HelperDataConversion.fromStringToUUID(uuid), calendar, rank, nameFirst, nameMiddle,
-							nameLast, crewPos, shop, flight, phoneNumber, address, social);
-				}
-
-				if (s.contentEquals("%")) {
-					String uuid = inputBuffer[currentLine + 1];
-					String sortieNumber = inputBuffer[currentLine + 2];
-					String startDate = inputBuffer[currentLine + 3];
-					String endDate = inputBuffer[currentLine + 4];
-					String sortieLoadList = inputBuffer[currentLine + 5];
-
-					String[] loadListBuffer = sortieLoadList.split("\\#");
-
-					new Sortie(HelperDataConversion.fromStringToUUID(uuid), sortieNumber,
-							HelperDataConversion.fromStringToLocalDate(startDate),
-							HelperDataConversion.fromStringToLocalDate(endDate), loadListBuffer);
-				}
-
-				currentLine++;
-			}
-
-			for (Sortie s : Main.sortieIndex) {
-				for (String st : s.loadListTemp) {
-					for (Person p : Main.personIndex) {
-						if (st.contentEquals(p.uuid.toString())) {
-							s.loadList.add(p);
-						}
-					}
-				}
-			}
-		}
-
-		inputBufferSingle = readBytes("db_.txt");
-
-		if (inputBufferSingle.isBlank()) {
-			try {
-				writeBytes("db_.txt", "");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		} else {
-			String[] inputBuffer = inputBufferSingle.split(System.getProperty("line.separator"));
-
-			for (String s : inputBuffer) {
-				String[] aptBuffer = s.split("\\~");
-
-				boolean tempFlyable = false;
-
-				if (aptBuffer[3].contentEquals("true"))
-					tempFlyable = true;
-
-				String tempDesc;
-
-				try {
-					tempDesc = aptBuffer[4];
-				} catch (Exception e) {
-					tempDesc = "Generic";
-				}
-
-				for (Person p : Main.personIndex) {
-					if (p.uuid.equals(HelperDataConversion.fromStringToUUID(aptBuffer[0]))) {
-						Appointment a = new Appointment(LocalDate.parse(aptBuffer[1]), LocalDate.parse(aptBuffer[2]),
-								tempFlyable, tempDesc);
-						p.calendar.add(a);
-					}
-				}
-			}
-		}
-	}
-
-	public static void writeBytes(String fileName, String fileContent) {
-		try (FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
-			fileOutputStream.write(fileContent.getBytes());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static String readBytes(String fileName) {
-		String output = "";
-		try (FileInputStream fileInputStream = new FileInputStream(fileName)) {
-			int ch = fileInputStream.read();
-			while (ch != -1) {
-				output += (char) ch;
-				ch = fileInputStream.read();
-			}
-		} catch (FileNotFoundException e) {
-			System.out.println("Creating db file.");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return output;
-	}
-
-	public static void serialWrite(Object o, String directory) {
+	private static void serialWrite(Object o, String directory) {
 
 		try {
 			FileOutputStream fos = new FileOutputStream(directory);
@@ -224,32 +25,89 @@ public class DatabaseComposer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public static void serialWriteController() {
 
+		ArrayList<String> dbIndexWrite = new ArrayList<String>();
+
 		for (Sortie s : Main.sortieIndex) {
-			currentUUID = "s_" + UUID.randomUUID().toString();
-			dbIndex.add(currentUUID);
+			currentUUID = "s_" + s.uuid;
+			dbIndexWrite.add(currentUUID);
 			serialWrite(s, currentUUID);
 		}
 
 		for (Person p : Main.personIndex) {
-			currentUUID = "p_" + UUID.randomUUID().toString();
-			dbIndex.add(currentUUID);
+			currentUUID = "p_" + p.uuid;
+			dbIndexWrite.add(currentUUID);
 			serialWrite(p, currentUUID);
-			
+
 			for (Appointment a : p.calendar) {
-				currentUUID = "a_" + UUID.randomUUID().toString();
-				dbIndex.add(currentUUID);
+				currentUUID = "a_" + a.uuid;
+				dbIndexWrite.add(currentUUID);
 				serialWrite(a, currentUUID);
 			}
 		}
-		
-		serialWrite(dbIndex, "index");
+
+		serialWrite(dbIndexWrite, "index");
+		System.out.println("INDEX ON WRITE: " + dbIndexWrite.toString());
+
 	}
 
-	public static Person serialReadPerson(String directory) {
+	public static void serialReadController() {
+		if (new File("index").exists()) {
+			ArrayList<String> dbIndexRead = serialReadIndex();
+			System.out.println("INDEX ON READ: " + dbIndexRead.toString());
+
+			String currentLine = null;
+			for (int i = 0; i < dbIndexRead.size(); i++) {
+				currentLine = dbIndexRead.get(i);
+				System.out.println("Reading " + currentLine);
+				switch (currentLine.charAt(0)) {
+				case 's':
+					serialReadSortie(currentLine);
+					break;
+				case 'p':
+					serialReadPerson(currentLine);
+					break;
+				case 'a':
+					serialReadAppointment(currentLine);
+					break;
+				default:
+					System.err.println("index element type is unknown: " + currentLine);
+				}
+
+			}
+		} else {
+			System.err.println("Index file not found, no objects loaded");
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	private static ArrayList<String> serialReadIndex() {
+
+		ArrayList<String> result = null;
+
+		try {
+			FileInputStream fis = new FileInputStream("index");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			result = (ArrayList<String>) ois.readObject();
+			ois.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	private static Person serialReadPerson(String directory) {
 
 		Person result = null;
 
@@ -267,10 +125,12 @@ public class DatabaseComposer {
 			e.printStackTrace();
 		}
 
+		Main.personIndex.add(result);
+		System.out.println("Created person object: " + result.nameLast);
 		return result;
 	}
 
-	public static Sortie serialReadSortie(String directory) {
+	private static Sortie serialReadSortie(String directory) {
 
 		Sortie result = null;
 
@@ -288,10 +148,12 @@ public class DatabaseComposer {
 			e.printStackTrace();
 		}
 
+		Main.sortieIndex.add(result);
+		System.out.println("Created sortie object: " + result.sortieNumber);
 		return result;
 	}
 
-	public static Appointment serialReadAppointment(String directory) {
+	private static Appointment serialReadAppointment(String directory) {
 
 		Appointment result = null;
 
@@ -309,6 +171,7 @@ public class DatabaseComposer {
 			e.printStackTrace();
 		}
 
+		System.out.println("Created appointment object: " + result.description);
 		return result;
 	}
 

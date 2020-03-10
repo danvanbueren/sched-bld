@@ -210,7 +210,6 @@ public class GUITelescope {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			public void run() {
 				DatabaseComposer.serialWriteController();
-				DatabaseComposer.save();
 			}
 		}));
 	}

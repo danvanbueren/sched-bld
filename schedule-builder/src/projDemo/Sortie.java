@@ -1,10 +1,13 @@
 package projDemo;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Sortie {
+public class Sortie implements Serializable {
+
+	private static final long serialVersionUID = -8658931064359097206L;
 
 	UUID uuid;
 
