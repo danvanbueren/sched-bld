@@ -1,4 +1,4 @@
-1. Load information from unknown source and parse into database (flat file?)
+1. Load information from unknown source and parse into database ~~(flat file?)~~ (nope, we're using MySQL)
 	- names/ranks, appointments + info
 2. Ask user for sortie dates/times to be scheduled
 3. Load each individual identity as an object & cross-check availability
